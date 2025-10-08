@@ -6,9 +6,8 @@ class CategoriaEnum(enum.Enum):
     MOUSEPAD = 4
 
 class Categoria:
-    def __init__(self, id):
-        self._id = id
-        self._nome = CategoriaEnum(id).name
+    def __init__(self, id:int):
+        self.set_id(id)
 
     def get_nome(self):
         return self._nome
@@ -16,7 +15,7 @@ class Categoria:
     def get_id(self):
         return self._id
 
-    def set_id(self, id):
+    def set_id(self, id:int):
         self._id = id
         self._nome = CategoriaEnum(id).name
 
