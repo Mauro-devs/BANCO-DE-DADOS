@@ -1,6 +1,6 @@
 from src.model.categoria import Categoria
 class Produto:
-    def __init__(self, nome, preco_unitario, categoria: Categoria, id=None, descricao=None):
+    def __init__(self, nome:str, preco_unitario:float, categoria:Categoria, id:int=None, descricao:str=None):
         self._id = id
         self._nome = nome
         self._preco_unitario = preco_unitario
@@ -25,16 +25,16 @@ class Produto:
     def get_categoria(self):
         return self._categoria.get_nome()
     
-    def set_nome(self, nome):
+    def set_nome(self, nome:str):
         self._nome = nome
 
-    def set_preco_unitario(self, preco_unitario):
+    def set_preco_unitario(self, preco_unitario:float):
         self._preco_unitario = preco_unitario
 
-    def set_descricao(self, descricao):
+    def set_descricao(self, descricao:str):
         self._descricao = descricao
 
-    def set_categoria(self, categoria):
+    def set_categoria(self, categoria:str):
         self._categoria = categoria
 
     def __str__(self):
