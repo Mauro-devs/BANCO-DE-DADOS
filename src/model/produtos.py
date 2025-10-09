@@ -1,6 +1,5 @@
-from src.model.categoria import Categoria
 class Produto:
-    def __init__(self, nome:str, preco_unitario:float, categoria:Categoria, id:int=None, descricao:str=None):
+    def __init__(self, nome:str, preco_unitario:float, descricao:str, categoria:str, id:int=None):
         self._id = id
         self._nome = nome
         self._preco_unitario = preco_unitario
@@ -25,6 +24,9 @@ class Produto:
     def get_categoria(self):
         return self._categoria.get_nome()
     
+    def set_id(self, id:int):
+        self._id = id
+    
     def set_nome(self, nome:str):
         self._nome = nome
 
@@ -38,4 +40,4 @@ class Produto:
         self._categoria = categoria
 
     def __str__(self):
-        return f"Produto: {self._nome} (ID: {self._id}), Preço Unitário: {self._preco_unitario}, Descrição: {self._descricao}, Categoria: {self._categoria.get_nome()}"
+        return f"Produto: {self._nome} (ID: {self._id}), Preço Unitário: {self._preco_unitario}, Descrição: {self._descricao}, Categoria: {self._categoria}"
