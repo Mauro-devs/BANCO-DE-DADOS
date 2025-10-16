@@ -3,7 +3,7 @@ from funcionarios import Funcionario
 from datetime import date
 
 
-class MovimentacoesEstoque:
+class MovimentacaoEstoque:
     def __init__(self, produto_fornecedor:ProdutoFornecedor, funcionario:Funcionario, quantidade:int, tipo:str, data:date, id:int=None):
         self._id = id
         self._produto_fornecedor = produto_fornecedor
