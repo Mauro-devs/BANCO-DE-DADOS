@@ -1,32 +1,36 @@
-from connexion.conexao_oracle import ConexaoOracle
-from model.produtos import Produto
+from src.connexion.conexao_oracle import ConexaoOracle
+from src.model.produtos import Produto
 
 class ControllerProduto:
     def __init__(self):
         pass
 
-    def inserir_produto(self):
-        bd = ConexaoOracle(can_write=True)
-        bd.connect()
+    def inserir_produto(self) -> Produto:
+            
+            try:
+                bd = ConexaoOracle(can_write=True)
+                bd.connect()
 
-        id = input("ID do produto novo: ")
-        if not self.existencia_produto(bd, id):
-            nome = input("Nome do produto: ")
-            preco = float(input("Preco do produto: "))
-            descricao = input("Descricao do produto: ")
-            categoria = input("Categoria do produto: ")
-            bd.write(f"INSERT INTO PRODUTOS (ID_PRODUTO, NOME , PRECO_UNITARIO, DESCRICAO, CATEGORIA) VALUES ({id}, '{nome}', {preco}, '{descricao}', '{categoria}')")
+                #Lógica de verificar se o produto já existe para adicionar outro não faz sentido, 
+                #pois eu posso ter dois produtos iguais, porém o id sempre será diferente
 
-            dados_produto = bd.sqlToTuple(f"SELECT ID_PRODUTO, NOME, PRECO_UNITARIO, DESCRICAO, CATEGORIA FROM PRODUTOS WHERE ID_PRODUTO = {id}")
-            if dados_produto:
-                produto = Produto(dados_produto[0], dados_produto[1], dados_produto[2], dados_produto[3], dados_produto[4])
-                print(f"{produto} cadastrado.")
-                return produto
-            else:
-                print("Erro ao buscar o produto cadastrado!")
-        else:
-            print("ID já cadastrado!")
-            return None
+                nome = input("Nome do produto: ")
+                preco = float(input("Preco do produto: "))
+                descricao = input("Descricao do produto: ")
+                categoria = input("Categoria do produto: ")
+                sql_insert = bd.write(f"INSERT INTO PRODUTOS (NOME , PRECO_UNITARIO, DESCRICAO, CATEGORIA) VALUES ('{nome}', {preco}, '{descricao}', '{categoria}')")
+                params = (nome, preco, descricao, categoria)
+
+                dados_produto = bd.sqlToTuple(sql_insert, params)
+                
+                if dados_produto:
+                    produto = Produto(dados_produto[0], dados_produto[1], dados_produto[2], dados_produto[3], dados_produto[4])
+                    print(f"Produto com id {produto[1]} cadastrado.")
+                    return produto
+                else:
+                    print("Erro ao buscar o produto cadastrado!")
+            except Exception:
+                ...
 
     def excluir_produto(self):
         bd = ConexaoOracle(can_write=True)
@@ -84,3 +88,8 @@ class ControllerProduto:
         else:
             print("ID não encontrado!")
             return None
+        
+
+if __name__ == "__main__":
+    c = ControllerProduto
+    c.inserir_produto()

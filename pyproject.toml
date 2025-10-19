@@ -1,0 +1,9 @@
+[project]
+name = "banco-de-dados"
+version = "0.1.0"
+
+[dependency-groups]
+dev = [
+    "oracledb>=3.4.0",
+    "pandas>=2.3.3",
+]

@@ -41,9 +41,9 @@ class ConexaoOracle:
             print(e)
             return []
 
-    def sqlToTuple(self, query:str):
+    def sqlToTuple(self, query:str, params:tuple):
         try:
-            self.cur.execute(query)
+            self.cur.execute(query, params)
             row = self.cur.fetchone() 
             return row 
         except oracledb.DatabaseError as e:
