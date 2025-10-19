@@ -1,12 +1,8 @@
-
 DROP TABLE MOVIMENTACAO_ESTOQUE;
+DROP TABLE PRODUTOS_FORNECEDORES;
 DROP TABLE PRODUTOS;
 DROP TABLE FORNECEDORES;
 DROP TABLE FUNCIONARIOS;
-DROP TABLE PRODUTOS_FORNECEDORES;
-
-
-
 
 CREATE TABLE PRODUTOS(
 	id_produto INT PRIMARY KEY,
@@ -15,20 +11,15 @@ CREATE TABLE PRODUTOS(
 	descricao VARCHAR2(30),
 	categoria VARCHAR2(30) NOT NULL,
 	
-	
-	
-	CONSTRAINT check_tipo CHECK (categoria IN ('MOUSE', 'TECLADO', 'MONITOR', 'HEADSET', 'MOUSE_PAD'))
-	
+	CONSTRAINT check_tipo CHECK (categoria IN ('MOUSE', 'TECLADO', 'MONITOR', 'HEADSET', 'MOUSE_PAD'))	
 );
 
 CREATE TABLE FORNECEDORES(
-
 	cnpj VARCHAR2(14) PRIMARY KEY,
 	nome_fantasia VARCHAR2(50) NOT NULL,
 	telefone VARCHAR2(11) NOT NULL 
 	
 );
-
 
 CREATE TABLE PRODUTOS_FORNECEDORES(
 	id_produto_fornecedor INT PRIMARY KEY,
@@ -39,31 +30,21 @@ CREATE TABLE PRODUTOS_FORNECEDORES(
 	CONSTRAINT fk_id_fornecedor FOREIGN KEY (cnpj_fornecedor) REFERENCES FORNECEDORES(cnpj)
 );
 
-
 CREATE TABLE FUNCIONARIOS(
-
 	cpf VARCHAR2(11) PRIMARY KEY,
 	nome VARCHAR2(50) NOT NULL,
 	telefone VARCHAR2(11) NOT NULL
 );
 
-
-
-
 CREATE TABLE MOVIMENTACAO_ESTOQUE(
 	id_movimentacao INT PRIMARY KEY,
-	id_produto INT NOT NULL,
+	id_produto_fornecedor INT NOT NULL,
 	cpf_funcionario VARCHAR2(11) NOT NULL,
 	quantidade INT NOT NULL,
 	tipo_movimentacao VARCHAR2(10) NOT NULL,
 	data_movimentacao DATE NOT NULL,
 	
 	CONSTRAINT check_tipo_movimentacao CHECK (tipo_movimentacao IN ('ENTRADA', 'SAIDA')),
-	CONSTRAINT fk_id_produto FOREIGN KEY (id_produto) REFERENCES PRODUTOS(id_produto),
+	CONSTRAINT fk_id_produto_fornecedores FOREIGN KEY (id_produto_fornecedor) REFERENCES PRODUTOS_FORNECEDORES(id_produto_fornecedor),
 	CONSTRAINT fk_cpf_funcionario FOREIGN KEY (cpf_funcionario) REFERENCES FUNCIONARIOS(cpf)
-	
 );
-
-
-
-
