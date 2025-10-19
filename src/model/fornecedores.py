@@ -1,5 +1,5 @@
 class Fornecedor:
-    def __init__(self, CNPJ:str, nome:str, telefone:str):
+    def __init__(self, CNPJ:str=None, nome:str=None, telefone:str=None):
         self._CNPJ = CNPJ
         self._nome = nome
         self._telefone = telefone

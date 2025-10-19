@@ -2,7 +2,7 @@ from produtos import Produto
 from fornecedores import Fornecedor
 
 class ProdutoFornecedor:
-    def __init__(self, produto:Produto, fornecedor:Fornecedor, id:int=None):
+    def __init__(self, id:int=None, produto:Produto=None, fornecedor:Fornecedor=None):
         self._id = id
         self._produto = produto
         self._fornecedor = fornecedor

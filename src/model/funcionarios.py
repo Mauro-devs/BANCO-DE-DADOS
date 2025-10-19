@@ -1,5 +1,5 @@
 class Funcionario:
-    def __init__(self, CPF:str, nome:str, telefone:str):
+    def __init__(self, CPF:str=None, nome:str=None, telefone:str=None):
         self._CPF = CPF
         self.nome = nome
         self.telefone = telefone

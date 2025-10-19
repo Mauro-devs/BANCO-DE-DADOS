@@ -4,7 +4,7 @@ from datetime import date
 
 
 class MovimentacaoEstoque:
-    def __init__(self, produto_fornecedor:ProdutoFornecedor, funcionario:Funcionario, quantidade:int, tipo:str, data:date, id:int=None):
+    def __init__(self, id:int=None, produto_fornecedor:ProdutoFornecedor=None, funcionario:Funcionario=None, quantidade:int=0, tipo:str="", data:date=None):
         self._id = id
         self._produto_fornecedor = produto_fornecedor
         self._funcionario = funcionario
