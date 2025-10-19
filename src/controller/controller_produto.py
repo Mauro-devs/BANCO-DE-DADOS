@@ -5,27 +5,23 @@ class ControllerProduto:
     def __init__(self):
         pass
 
-    def inserir_produto(self) -> Produto:
-            
+    def inserir_produto(self):
             try:
                 bd = ConexaoOracle(can_write=True)
                 bd.connect()
-
-                #Lógica de verificar se o produto já existe para adicionar outro não faz sentido, 
-                #pois eu posso ter dois produtos iguais, porém o id sempre será diferente
 
                 nome = input("Nome do produto: ")
                 preco = float(input("Preco do produto: "))
                 descricao = input("Descricao do produto: ")
                 categoria = input("Categoria do produto: ")
-                sql_insert = bd.write(f"INSERT INTO PRODUTOS (NOME , PRECO_UNITARIO, DESCRICAO, CATEGORIA) VALUES ('{nome}', {preco}, '{descricao}', '{categoria}')")
-                params = (nome, preco, descricao, categoria)
 
-                dados_produto = bd.sqlToTuple(sql_insert, params)
-                
-                if dados_produto:
-                    produto = Produto(dados_produto[0], dados_produto[1], dados_produto[2], dados_produto[3], dados_produto[4])
-                    print(f"Produto com id {produto[1]} cadastrado.")
+                query = f"INSERT INTO PRODUTOS (NOME, PRECO_UNITARIO, DESCRICAO, CATEGORIA) VALUES (:1, :2, :3, :4) RETURNING ID_PRODUTO INTO :5"
+                params = (nome, preco, descricao, categoria)
+                # coletar o id gerado
+                id_gerado = bd.return_id(query, params)
+                if id_gerado:
+                    produto = Produto(id_gerado, nome, preco, descricao, categoria)
+                    print(f"Produto com ID {id_gerado} cadastrado.")
                     return produto
                 else:
                     print("Erro ao buscar o produto cadastrado!")
@@ -87,8 +83,7 @@ class ControllerProduto:
             return produto
         else:
             print("ID não encontrado!")
-            return None
-        
+            return None    
 
 if __name__ == "__main__":
     c = ControllerProduto

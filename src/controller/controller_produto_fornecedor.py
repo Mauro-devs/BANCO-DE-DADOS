@@ -26,16 +26,13 @@ class ControllerProdutoFornecedor:
             print("Fornecedor não cadastrado! Cadastre o fornecedor antes de associá-lo a um produto.")
             return None
         
-        id_produto_fornecedor = input("ID para a associação PRODUTO/FORNECEDOR: ")
-        if self.existencia_produto_fornecedor(bd, id_produto_fornecedor):
-            print("ID já cadastrado!")
-            return None
-
-        bd.write(f"INSERT INTO PRODUTOS_FORNECEDORES (ID_PRODUTO_FORNECEDOR, ID_PRODUTO, CNPJ_FORNECEDOR) VALUES ('{id_produto_fornecedor}', '{id_produto}', '{cnpj}')")
-        print("Produto associado ao fornecedor com sucesso.")
-        produto_fornecedor = ProdutoFornecedor(id_produto_fornecedor, obj_produto, obj_fornecedor)
-        print(f"{produto_fornecedor} cadastrado.")
-        return produto_fornecedor
+        query = "INSERT INTO PRODUTOS_FORNECEDORES (ID_PRODUTO, CNPJ_FORNECEDOR) VALUES (:1, :2) RETURNING ID_PRODUTO_FORNECEDOR INTO :3"
+        params = (id_produto, cnpj)
+        id_produto_forecedor = bd.return_id(query, params)
+        if id_produto_forecedor:
+            produto_fornecedor = ProdutoFornecedor(id_produto_forecedor, obj_produto, obj_fornecedor)
+            print(f"Associação  PRODUTO_FORNECEDOR com ID {id_produto_forecedor} cadastrada.")
+            return produto_fornecedor
     
     def excluir_produto_fornecedor(self):
         bd = ConexaoOracle(can_write=True)
