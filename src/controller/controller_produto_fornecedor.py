@@ -60,14 +60,14 @@ class ControllerProdutoFornecedor:
             id_produto = input("ID do produto: ")
             obj_produto = self.ctrl_produto.buscar_produto(bd, id_produto)
             if not obj_produto:
-                print("Produto não cadastrado! Cadastre o produto antes de associá-lo a um fornecedor.")
+                print("Produto não cadastrado!")
                 return None
             
             # verificar fk fornecedor
             cnpj = input("CNPJ do fornecedor: ")
             obj_fornecedor = self.ctrl_fornecedor.buscar_fornecedor(bd, cnpj)
             if not obj_fornecedor:
-                print("Fornecedor não cadastrado! Cadastre o fornecedor antes de associá-lo a um produto.")
+                print("Fornecedor não cadastrado!")
                 return None
 
             bd.write(f"UPDATE PRODUTOS_FORNECEDORES SET ID_PRODUTO = '{id_produto}', CNPJ_FORNECEDOR = '{cnpj}' WHERE ID_PRODUTO_FORNECEDOR = '{id}'")
@@ -81,3 +81,13 @@ class ControllerProdutoFornecedor:
     def existencia_produto_fornecedor(self, bd:ConexaoOracle, id:int):
         query = f"SELECT 1 FROM PRODUTOS_FORNECEDORES WHERE ID_PRODUTO_FORNECEDOR = '{id}'"
         return True if bd.sqlToTuple(query) else False
+    
+    def buscar_produto_fornecedor(self, bd:ConexaoOracle, id:int):
+        dados = bd.sqlToTuple(f"SELECT ID_PRODUTO_FORNECEDOR, ID_PRODUTO, CNPJ_FORNECEDOR FROM PRODUTOS_FORNECEDORES WHERE ID_PRODUTO_FORNECEDOR = '{id}'")
+        if dados:
+            obj_produto = self.ctrl_produto.buscar_produto(bd, dados[1])
+            obj_fornecedor = self.ctrl_fornecedor.buscar_fornecedor(bd, dados[2])
+            produto_fornecedor = ProdutoFornecedor(dados[0], obj_produto, obj_fornecedor)
+            return produto_fornecedor
+        else:
+            return None
