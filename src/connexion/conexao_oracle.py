@@ -4,15 +4,17 @@ import sys
 class ConexaoOracle:
     def __init__(self, can_write:bool=False):
         self.can_write = can_write
-        self.host = ""
+        self.host = None
         self.port = None
-        self.service_name = ""
-    
+        self.service_name = None
+        self.conn = None
+        self.cur = None
+
         try:
-            with open("connexion/acesso/autentificacao.oracle", "r") as f:
-                self.user, self.senha = f.read().split(",")
+            with open("src/connexion/acesso/autenticacao.oracle", "r") as f:
+                self.host, self.port, self.service_name, self.user, self.senha = f.read().split(",")
         except FileNotFoundError:
-            print("")
+            print("Erro: arquivo de senha do db não encontrado")
             print("")
 
     def __del__(self):
