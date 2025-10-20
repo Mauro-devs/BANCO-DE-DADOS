@@ -1,13 +1,13 @@
-from controller.controller_produto_fornecedor import ControllerProdutoFornecedor
-from controller.controller_funcionario import ControllerFuncionario
-from connexion.conexao_oracle import ConexaoOracle
-from model.movimentacoes_estoque import MovimentacaoEstoque
+from src.controller.controller_produto_fornecedor import ControllerProdutoFornecedor
+from repository.repository_funcionario import RepositoryFuncionario
+from src.connexion.conexao_oracle import ConexaoOracle
+from src.model.movimentacoes_estoque import MovimentacaoEstoque
 from datetime import date
 
 class ControllerMovimentacaoEstoque:
     def __init__(self):
         self.ctrl_produto_fornecedor = ControllerProdutoFornecedor()
-        self.ctrl_funcionario = ControllerFuncionario()
+        self.repository_funcionario = RepositoryFuncionario()
 
     def inserir_movimentacao_estoque(self):
         try:
@@ -23,7 +23,7 @@ class ControllerMovimentacaoEstoque:
         
             # verificar fk funcionario
             cpf_funcionario = input("CPF do funcionário: ")
-            obj_funcionario = self.ctrl_funcionario.buscar_funcionario(bd, cpf_funcionario)
+            obj_funcionario = self.repository_funcionario.buscar_funcionario(bd, cpf_funcionario)
             if not obj_funcionario:
                 print("Funcionário não cadastrado!")
                 return None
@@ -89,7 +89,7 @@ class ControllerMovimentacaoEstoque:
                 dados_movimentacao = bd.sqlToTuple(f"SELECT ID_MOVIMENTACAO, ID_PRODUTO_FORNECEDOR, CPF_FUNCIONARIO, QUANTIDADE, TIPO_MOVIMENTACAO, DATA_MOVIMENTACAO FROM MOVIMENTACAO_ESTOQUE WHERE ID_MOVIMENTACAO = {id}")
                 if dados_movimentacao:
                     obj_produto_fornecedor = self.ctrl_produto_fornecedor.buscar_produto_fornecedor(bd, dados_movimentacao[1])
-                    obj_funcionario = self.ctrl_funcionario.buscar_funcionario(bd, dados_movimentacao[2])
+                    obj_funcionario = self.repository_funcionario.buscar_funcionario(bd, dados_movimentacao[2])
 
                     if obj_produto_fornecedor and obj_funcionario:
                         movimentacao_estoque = MovimentacaoEstoque(dados_movimentacao[0], obj_produto_fornecedor, obj_funcionario, dados_movimentacao[3], dados_movimentacao[4], dados_movimentacao[5])
