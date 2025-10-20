@@ -41,11 +41,24 @@ class ConexaoOracle:
             print(e)
             return []
 
+    # select
     def sqlToTuple(self, query:str):
         try:
             self.cur.execute(query)
             row = self.cur.fetchone() 
             return row 
+        except oracledb.DatabaseError as e:
+            print(e)
+            return None
+
+    # insert and return id
+    def return_id(self, query:str, params:tuple):
+        try:
+            id = self.cur.var(int)
+            all_params = params + (id,)
+            self.cur.execute(query, all_params)
+            self.conn.commit()
+            return id.getvalue()[0]
         except oracledb.DatabaseError as e:
             print(e)
             return None
