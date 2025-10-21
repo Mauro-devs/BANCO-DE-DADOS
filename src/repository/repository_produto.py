@@ -33,9 +33,7 @@ class RepositoryProduto():
         return True
     
     def atualizar_produto(self, bd: ConexaoOracle, produto: Produto) -> Produto:
-        dados_produto: tuple = bd.sqlToTuple(f"UPDATE PRODUTOS SET NOME = '{produto.get_nome()}', PRECO_UNITARIO = {produto.get_preco()}, DESCRICAO = '{produto.get_descricao()}', CATEGORIA = '{produto.get_categoria()}' WHERE ID_PRODUTO = {produto.get_id()}")
-
-        return Produto(dados_produto[0], dados_produto[1], dados_produto[2], dados_produto[3], dados_produto[4])
+        bd.write(f"UPDATE PRODUTOS SET NOME = '{produto.get_nome()}', PRECO_UNITARIO = {produto.get_preco_unitario()}, DESCRICAO = '{produto.get_descricao()}', CATEGORIA = '{produto.get_categoria()}' WHERE ID_PRODUTO = {produto.get_id()}")
 
 
     def existencia_produto(self, bd: ConexaoOracle, id: int) -> bool:

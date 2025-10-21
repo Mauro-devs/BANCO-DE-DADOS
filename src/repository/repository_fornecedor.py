@@ -34,6 +34,6 @@ class RepositoryFornecedor():
         bd.write(f"UPDATE FORNECEDORES SET NOME = '{fornecedor.get_nome()}', TELEFONE = '{fornecedor.get_telefone()}' WHERE CNPJ = '{fornecedor.get_cnpj()}'")
 
     def existencia_fornecedor(self, bd: ConexaoOracle, cnpj: str) -> bool:
-        query = f"SELECT 1 FROM FORNECEDORES WHERE CNPJ = {cnpj}"
-        
+        query = f"SELECT 1 FROM FORNECEDORES WHERE CNPJ = '{cnpj}'"
+
         return True if bd.sqlToTuple(query) else False

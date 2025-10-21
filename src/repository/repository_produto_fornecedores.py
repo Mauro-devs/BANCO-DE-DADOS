@@ -1,5 +1,7 @@
 from src.conexion.conexao_oracle import ConexaoOracle
 from src.model.produtos_fornecedores import ProdutoFornecedor
+from src.controller.controller_produto import ControllerProduto
+from src.controller.controller_fornecedor import ControllerFornecedor
 from src.model.produtos import Produto
 from src.model.fornecedores import Fornecedor
 
@@ -28,7 +30,6 @@ class RepositoryProdutoFornecedores():
             obj_fornecedor = self.ctrl_fornecedor.buscar_fornecedor(bd, dados[2])
             produto_fornecedor = ProdutoFornecedor(dados[0], obj_produto, obj_fornecedor)
             return produto_fornecedor
-        
         else:
             return None
 

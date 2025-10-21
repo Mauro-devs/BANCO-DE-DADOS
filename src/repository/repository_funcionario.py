@@ -31,9 +31,7 @@ class RepositoryFuncionario():
         bd.write(f"UPDATE FUNCIONARIOS SET NOME = '{funcionario.get_nome()}', TELEFONE = '{funcionario.get_telefone()}' WHERE CPF = '{funcionario.get_cpf()}'")
     
     def excluir_funcionario(self, bd: ConexaoOracle, cpf: str) -> bool:
-
         check_fk = f"SELECT 1 FROM MOVIMENTACAO_ESTOQUE WHERE CPF_FUNCIONARIO = '{cpf}'"
-            
         if bd.sqlToTuple(check_fk):
             return False
         
