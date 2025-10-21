@@ -66,7 +66,8 @@ class ControllerProduto:
             categoria = input("Categoria nova do produto: ")
             
             produto_antigo = self.repository_produto.buscar_produto(bd, id)
-            produto_novo = self.repository_produto.atualizar_produto(bd, Produto(id, nome, preco, descricao, categoria))
+            self.repository_produto.atualizar_produto(bd, Produto(id, nome, preco, descricao, categoria))
+            produto_novo = self.repository_produto.buscar_produto(bd, id)
 
             if produto_antigo != produto_novo:
                 print(f"{produto_novo} atualizado.")

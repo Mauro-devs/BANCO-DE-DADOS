@@ -29,11 +29,9 @@ class ControllerProdutoFornecedor:
 
         produto_fornecedor: ProdutoFornecedor = self.repository_produto_fornecedor.inserir_produto_fornecedor(bd, produto, fornecedor)
         if produto_fornecedor:
-            print(f"Associação PRODUTO/FORNECEDOR com ID {produto_fornecedor.get_id} cadastrada.")
-            return produto_fornecedor
+            print(f"Associação PRODUTO/FORNECEDOR com ID {produto_fornecedor.get_id()} cadastrada.")
         else:
             print("Erro ao inserir a associação PRODUTO/FORNECEDOR!")
-            return None
     
     def excluir_produto_fornecedor(self):
         bd = ConexaoOracle(can_write=True)
@@ -42,7 +40,7 @@ class ControllerProdutoFornecedor:
         id = input("ID da associação PRODUTO/FORNECEDOR a ser excluída: ")
         if self.repository_produto_fornecedor.existencia_produto_fornecedor(bd, id):
             
-            excluido: bool = self.repository_produto_fornecedor.excluir_fornecedor(bd, id)
+            excluido: bool = self.repository_produto_fornecedor.excluir_produto_fornecedor(bd, id)
             
             if not excluido:
                 print("Associação não pode ser excluída!\n**Está associada na tabela MOVIMENTACAO_ESTOQUE")

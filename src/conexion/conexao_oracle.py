@@ -6,12 +6,14 @@ class ConexaoOracle:
     def __init__(self, can_write:bool=False):
         self.can_write = can_write
         self.host = ""
+        self.cur = None
+        self.conn = None
         self.port = None
         self.service_name = ""
     
         try:
-            with open("conexion/acesso/autentificacao.oracle", "r") as f:
-                self.user, self.senha = f.read().split(",")
+            with open("src/conexion/acesso/autenticacao.oracle", "r") as f:
+                self.host, self.port, self.service_name, self.user, self.senha = f.read().split(",")
         except FileNotFoundError:
             print("")
             print("")
