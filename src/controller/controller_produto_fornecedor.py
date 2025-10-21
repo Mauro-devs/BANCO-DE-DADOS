@@ -1,6 +1,6 @@
 from controller_produto import ControllerProduto
 from controller.controller_fornecedor import ControllerFornecedor
-from connexion.conexao_oracle import ConexaoOracle
+from conexion.conexao_oracle import ConexaoOracle
 from model.produtos_fornecedores import ProdutoFornecedor
 
 class ControllerProdutoFornecedor:

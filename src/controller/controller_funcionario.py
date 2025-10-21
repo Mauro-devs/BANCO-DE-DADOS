@@ -1,5 +1,5 @@
 from model.funcionarios import Funcionario
-from connexion.conexao_oracle import ConexaoOracle
+from conexion.conexao_oracle import ConexaoOracle
 
 class ControllerFuncionario:
     def __init__(self):

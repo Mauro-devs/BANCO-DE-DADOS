@@ -1,5 +1,5 @@
 from model.fornecedores import Fornecedor
-from connexion.conexao_oracle import ConexaoOracle
+from conexion.conexao_oracle import ConexaoOracle
 
 class ControllerFornecedor:
     def __init__(self):

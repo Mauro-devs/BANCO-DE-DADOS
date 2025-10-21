@@ -1,5 +1,6 @@
 import oracledb
 import sys
+from pandas import DataFrame
 
 class ConexaoOracle:
     def __init__(self, can_write:bool=False):
@@ -9,7 +10,7 @@ class ConexaoOracle:
         self.service_name = ""
     
         try:
-            with open("connexion/acesso/autentificacao.oracle", "r") as f:
+            with open("conexion/acesso/autentificacao.oracle", "r") as f:
                 self.user, self.senha = f.read().split(",")
         except FileNotFoundError:
             print("")
@@ -79,3 +80,8 @@ class ConexaoOracle:
             self.cur.close()
         if self.conn:
             self.conn.close()
+    
+    def sqlToDataFrame(self, query:str) -> DataFrame:
+        self.cur.execute(query)
+        rows = self.cur.fetchall()
+        return DataFrame(rows, columns=[col[0].lower() for col in self.cur.description])
