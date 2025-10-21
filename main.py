@@ -1,4 +1,9 @@
 from src.model.produtos import Produto
+from src.views.view_principal import principal_menu, limpar_console
 
-produto = Produto("Razer ViperX", 220.0)
-print(produto)
+sair = False
+
+limpar_console()
+
+while not sair:
+    sair = principal_menu()
