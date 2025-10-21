@@ -1,5 +1,3 @@
-import os
-from src.controller.controller_funcionario import ControllerFuncionario
 from src.views.view_funcionario import view_funcionario
 from src.views.view_produto import view_produto
 from src.views.view_fornecedor import view_fornecedor

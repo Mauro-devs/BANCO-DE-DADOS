@@ -8,7 +8,7 @@ def view_produto_fornecedor():
 
     while not sair:
         print("--------------------")
-        print(" MENU FORNECEDOR\n")
+        print(" MENU PRODUTO/FORNECEDOR\n")
         print("1) ADICIONAR")
         print("2) BUSCAR")
         print("3) ATUALIZAR")
