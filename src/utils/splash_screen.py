@@ -1,6 +1,6 @@
-from connexion.conexao_oracle import ConexaoOracle
+from src.conexion.conexao_oracle import ConexaoOracle
 
-from utils import config
+from src.utils import config
 
 class SplashScreen:
 
