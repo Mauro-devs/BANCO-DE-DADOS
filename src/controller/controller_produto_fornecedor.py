@@ -25,11 +25,15 @@ class ControllerProdutoFornecedor:
         fornecedor = self.repository_fornecedor.buscar_fornecedor(bd, cnpj)
         if not fornecedor:
             print("Fornecedor não cadastrado! Cadastre o fornecedor antes de associá-lo a um produto.")
+            return None
 
-            produto_fornecedor: ProdutoFornecedor = self.repository_produto_fornecedor.inserir_produto_fornecedor(bd, produto, fornecedor)
-        
-            print(f"Associação  PRODUTO_FORNECEDOR com ID {produto_fornecedor.get_id} cadastrada.")
+        produto_fornecedor: ProdutoFornecedor = self.repository_produto_fornecedor.inserir_produto_fornecedor(bd, produto, fornecedor)
+        if produto_fornecedor:
+            print(f"Associação PRODUTO/FORNECEDOR com ID {produto_fornecedor.get_id} cadastrada.")
             return produto_fornecedor
+        else:
+            print("Erro ao inserir a associação PRODUTO/FORNECEDOR!")
+            return None
     
     def excluir_produto_fornecedor(self):
         bd = ConexaoOracle(can_write=True)

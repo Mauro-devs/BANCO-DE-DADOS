@@ -34,14 +34,17 @@ class ControllerFuncionario:
 
         cpf = input("CPF do funcionário a ser excluído: ")
         if self.repository_funcionario.existencia_funcionario(bd, cpf):
-            funcionario_excluido = self.repository_funcionario.buscar_funcionario(bd, cpf)
+            funcionario_excluido: Funcionario = self.repository_funcionario.buscar_funcionario(bd, cpf)
             excluido: bool = self.repository_funcionario.excluir_funcionario(bd, cpf)
 
             if not excluido:
                 print("Funcionário não pode ser excluído!\n**Está associado na tabela MOVIMENTACAO_ESTOQUE")
                 return
             
-            print(f"{funcionario_excluido} excluído.")
+            if funcionario_excluido:
+                print(f"{funcionario_excluido} excluído.")
+            else:
+                print("Erro ao excluir o funcionário!")
         else:
             print("CPF não encontrado!")
 
@@ -69,7 +72,7 @@ class ControllerFuncionario:
         bd = ConexaoOracle(can_write=False)
         bd.connect()
 
-        cpf = int(input("CPF do funcionário: "))
+        cpf = input("CPF do funcionário: ")
 
         funcionario: Funcionario = self.repository_funcionario.buscar_funcionario(bd, cpf)
 
