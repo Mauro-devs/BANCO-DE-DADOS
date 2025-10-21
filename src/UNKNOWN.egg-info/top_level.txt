@@ -1,4 +1,0 @@
-connexion
-controller
-model
-sql

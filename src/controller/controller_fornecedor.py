@@ -1,49 +1,44 @@
-from model.fornecedores import Fornecedor
-from connexion.conexao_oracle import ConexaoOracle
+from src.model.fornecedores import Fornecedor
+from src.connexion.conexao_oracle import ConexaoOracle
+from src.repository.repository_fornecedor import RepositoryFornecedor
 
 class ControllerFornecedor:
     def __init__(self):
-        pass
+        self.repository_fornecedor = RepositoryFornecedor()
 
-    def inserir_fornecedor(self):
+    def inserir_fornecedor(self):        
         bd = ConexaoOracle(can_write=True)
         bd.connect()
         
         cnpj = input("CNPJ do fornecedor novo: ")
-        if not self.existencia_fornecedor(bd, cnpj):
+        if not self.repository_fornecedor.existencia_fornecedor(bd, cnpj):
             nome = input("Nome do fornecedor: ")
             telefone = input("Telefone do fornecedor: ")
-            bd.write(f"INSERT INTO FORNECEDORES (CNPJ, NOME, TELEFONE) VALUES ('{cnpj}', '{nome}', '{telefone}')")
+        
+            fornecedor: Fornecedor = self.repository_fornecedor.inserir_fornecedor(bd, Fornecedor(cnpj, nome, telefone))
 
-            dados_fornecedor = bd.sqlToTuple(f"SELECT CNPJ, NOME, TELEFONE FROM FORNECEDORES WHERE CNPJ = '{cnpj}'")
-            if dados_fornecedor:
-                fornecedor = Fornecedor(dados_fornecedor[0], dados_fornecedor[1], dados_fornecedor[2])
+            if fornecedor:
                 print(f"{fornecedor} cadastrado.")
-                return fornecedor
             else:
-                print("Erro ao buscar o fornecedor cadastrado!")
+                print("Erro ao cadastrar o Fornecedor!")
         else:
             print("CNPJ já cadastrado!")
-            return None
 
     def excluir_fornecedor(self):
         bd = ConexaoOracle(can_write=True)
         bd.connect()
 
         cnpj = input("CNPJ do fornecedor a ser excluído: ")
-        if self.existencia_fornecedor(bd, cnpj):
-            check_fk = f"SELECT 1 FROM PRODUTOS_FORNECEDORES WHERE CNPJ_FORNECEDOR = '{cnpj}'"
-            if bd.sqlToTuple(check_fk):
+        if self.repository_fornecedor.existencia_fornecedor(bd, cnpj):
+            
+            fornecedor: Fornecedor = self.repository_fornecedor.buscar_fornecedor(bd, cnpj)
+            excluido: bool = self.repository_fornecedor.excluir_fornecedor(bd, cnpj)
+
+            if not excluido:
                 print("Fornecedor não pode ser excluído!\n**Está associado na tabela PRODUTOS_FORNECEDORES")
                 return
             
-            dados_fornecedor = bd.sqlToTuple(f"SELECT CNPJ, NOME, TELEFONE FROM FORNECEDORES WHERE CNPJ = '{cnpj}'")
-            bd.write(f"DELETE FROM FORNECEDORES WHERE CNPJ = '{cnpj}'")
-            if dados_fornecedor:
-                fornecedor = Fornecedor(dados_fornecedor[0], dados_fornecedor[1], dados_fornecedor[2])
-                print(f"{fornecedor} excluído.")
-            else:
-                print("Erro ao buscar o fornecedor excluído!")
+            print(f"{fornecedor} excluído.")
         else:
             print("CNPJ não encontrado!")
 
@@ -52,31 +47,30 @@ class ControllerFornecedor:
         bd.connect()
 
         cnpj = input("CNPJ do fornecedor para atualização: ")
-        if self.existencia_fornecedor(bd, cnpj):
+        if self.repository_fornecedor.existencia_fornecedor(bd, cnpj):
             nome = input("Nome novo do fornecedor: ")
             telefone = input("Telefone novo do fornecedor: ")
-            bd.write(f"UPDATE FORNECEDORES SET NOME = '{nome}', TELEFONE = '{telefone}' WHERE CNPJ = '{cnpj}'")
+            
+            fornecedor_antigo = self.repository_fornecedor.buscar_fornecedor(bd, cnpj)
+            self.repository_fornecedor.atualizar_fornecedor(bd, Fornecedor(cnpj, nome, telefone))
+            fornecedor_novo = self.repository_fornecedor.buscar_fornecedor(bd, cnpj)
 
-            dados_fornecedor = bd.sqlToTuple(f"SELECT CNPJ, NOME, TELEFONE FROM FORNECEDORES WHERE CNPJ = '{cnpj}'")
-            if dados_fornecedor:
-                fornecedor = Fornecedor(dados_fornecedor[0], dados_fornecedor[1], dados_fornecedor[2])
-                print(f"{fornecedor} atualizado.")
-                return fornecedor
+            if fornecedor_antigo != fornecedor_novo:
+                print(f"{fornecedor_antigo} atualizado.")
             else:
-                print("Erro ao buscar o fornecedor atualizado!")
+                print("Erro ao atualizar o fornecedor!")
         else:
             print("CNPJ não encontrado!")
-            return None
-
-    def existencia_fornecedor(self, bd:ConexaoOracle, cnpj:str):
-        query = f"SELECT 1 FROM FORNECEDORES WHERE CNPJ = '{cnpj}'"
-        return True if bd.sqlToTuple(query) else False
     
-    def buscar_fornecedor(self, bd:ConexaoOracle, cnpj:str):
-            dados_fornecedor = bd.sqlToTuple(f"SELECT CNPJ, NOME, TELEFONE FROM FORNECEDORES WHERE CNPJ = '{cnpj}'")
-            if dados_fornecedor:
-                fornecedor = Fornecedor(dados_fornecedor[0], dados_fornecedor[1], dados_fornecedor[2])
-                return fornecedor   
+    def buscar_fornecedor(self):
+            bd = ConexaoOracle(can_write=False)
+            bd.connect()
+
+            cnpj: str = input("cnpj do fornecedor: ")
+
+            fornecedor: Fornecedor = self.repository_fornecedor.buscar_fornecedor(bd, cnpj)
+            
+            if fornecedor:
+                print(fornecedor)
             else:
-                print("CNPJ não encontrado!")
-                return None
+                print("Fornecedor não encontrado pelo CNPJ")

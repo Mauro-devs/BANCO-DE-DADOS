@@ -2,6 +2,8 @@ import os
 from src.controller.controller_funcionario import ControllerFuncionario
 from src.views.view_funcionario import view_funcionario
 from src.views.view_produto import view_produto
+from src.views.view_fornecedor import view_fornecedor
+from src.views.view_produto_fornecedor import view_produto_fornecedor
 from src.utils import limpar_console
 
 def principal_menu():
@@ -11,7 +13,8 @@ def principal_menu():
     print("2) PRODUTOS")
     print("3) FORNECEDORES")
     print("4) MOVIMENTAÇÕES")
-    print("5) SAIR")
+    print("5) PRODUTO FORNECEDOR")
+    print("6) SAIR")
 
     try:
         opcao = int(input("--: "))
@@ -30,12 +33,15 @@ def principal_menu():
         view_produto()
 
     elif opcao == 3:
-        pass
+        view_fornecedor()
 
     elif opcao == 4:
         pass
 
     elif opcao == 5:
+        view_produto_fornecedor()
+    
+    elif opcao == 6:
         return True
     
     else:

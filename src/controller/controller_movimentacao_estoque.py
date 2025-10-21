@@ -1,12 +1,13 @@
 from src.controller.controller_produto_fornecedor import ControllerProdutoFornecedor
 from repository.repository_funcionario import RepositoryFuncionario
+from repository.repository_produto_fornecedores import RepositoryProdutoFornecedores
 from src.connexion.conexao_oracle import ConexaoOracle
 from src.model.movimentacoes_estoque import MovimentacaoEstoque
 from datetime import date
 
 class ControllerMovimentacaoEstoque:
     def __init__(self):
-        self.ctrl_produto_fornecedor = ControllerProdutoFornecedor()
+        self.repository_produto_fornecedores = ControllerProdutoFornecedor()
         self.repository_funcionario = RepositoryFuncionario()
 
     def inserir_movimentacao_estoque(self):
@@ -16,7 +17,7 @@ class ControllerMovimentacaoEstoque:
 
             # verificar fk produto_fornecedor
             id_produto_fornecedor = int(input("ID da associação PRODUTO/FORNECEDOR: "))
-            obj_produto_fornecedor = self.ctrl_produto_fornecedor.buscar_produto_fornecedor(bd, id_produto_fornecedor)
+            obj_produto_fornecedor = self.repository_produto_fornecedores.buscar_produto_fornecedor(bd, id_produto_fornecedor)
             if not obj_produto_fornecedor:
                 print("Associação PRODUTO/FORNECEDOR não cadastrada!")
                 return None
