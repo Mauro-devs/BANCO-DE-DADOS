@@ -1,9 +1,9 @@
-from src.connexion.conexao_oracle import ConexaoOracle
+from src.conexion.conexao_oracle import ConexaoOracle
 from src.model.produtos import Produto
-
+from src.repository.repository_produto import RepositoryProduto
 class ControllerProduto:
     def __init__(self):
-        pass
+        self.repository_produto = RepositoryProduto()
 
     def inserir_produto(self):
             try:
@@ -15,16 +15,19 @@ class ControllerProduto:
                 descricao = input("Descricao do produto: ")
                 categoria = input("Categoria do produto: ")
 
-                query = f"INSERT INTO PRODUTOS (NOME, PRECO_UNITARIO, DESCRICAO, CATEGORIA) VALUES (:1, :2, :3, :4) RETURNING ID_PRODUTO INTO :5"
-                params = (nome, preco, descricao, categoria)
-                # coletar o id gerado
-                id_gerado = bd.return_id(query, params)
-                if id_gerado:
-                    produto = Produto(id_gerado, nome, preco, descricao, categoria)
-                    print(f"Produto com ID {id_gerado} cadastrado.")
-                    return produto
+                if categoria not in ["MOUSE", "TECLADO", "MONITOR", "HEADSET", "MOUSE_PAD"]:
+                    print("Categoria inválida -> (MOUSE, TECLADO, MONITOR, HEADSET, MOUSE_PAD)")
+                    return
+
+                produto_cadastrado: Produto = self.repository_produto.inserir_produto(bd, nome, preco, descricao, categoria)
+
+                if produto_cadastrado:
+                    print(f"Produto cadastrado com ID {produto_cadastrado.get_id()}.")
                 else:
-                    print("Erro ao buscar o produto cadastrado!")
+                    print(f"Erro ao cadastrar o produto")
+                
+                print() #Deixa para o visual ficar melhor
+
             except Exception:
                 ...
 
@@ -33,57 +36,61 @@ class ControllerProduto:
         bd.connect()
 
         id = input("ID do produto a ser excluído: ")
-        if self.existencia_produto(bd, id):
-            check_fk = f"SELECT 1 FROM PRODUTOS_FORNECEDORES WHERE ID_PRODUTO = {id}"
-            if bd.sqlToTuple(check_fk):
+        if self.repository_produto.existencia_produto(bd, id):
+            
+            produto_excluido: Produto = self.repository_produto.buscar_produto(bd, id)
+            excluido: bool = self.repository_produto.excluir_produto(bd, id)
+
+            if not excluido:
                print("Produto não pode ser excluido!\n**Está associada na tabela PRODUTOS_FORNECEDORES") 
                return
                 
-            dados_produto = bd.sqlToTuple(f"SELECT ID_PRODUTO, NOME, PRECO_UNITARIO, DESCRICAO, CATEGORIA FROM PRODUTOS WHERE ID_PRODUTO = {id}")
-            bd.write(f"DELETE FROM PRODUTOS WHERE ID_PRODUTO = {id}")
-            if dados_produto:
-                produto = Produto(dados_produto[0], dados_produto[1], dados_produto[2], dados_produto[3], dados_produto[4])
-                print(f"{produto} excluído.")
+            if produto_excluido:
+                print(f"{produto_excluido} excluído.")
             else:
-                print("Erro ao buscar o produto excluído!")
+                print("Erro ao excluir o produto!")
         else:
             print("ID não encontrado!")
+        
+        print() #Deixa para o visual ficar melhor
 
     def atualizar_produto(self):
         bd = ConexaoOracle(can_write=True)
         bd.connect()
 
         id = input("ID do produto para atualização: ")
-        if self.existencia_produto(bd, id):
+        if self.repository_produto.existencia_produto(bd, id):
             nome = input("Nome novo do produto: ")
             preco = float(input("Preco novo do produto: "))
             descricao = input("Descricao nova do produto: ")
             categoria = input("Categoria nova do produto: ")
-            bd.write(f"UPDATE PRODUTOS SET NOME = '{nome}', PRECO_UNITARIO = {preco}, DESCRICAO = '{descricao}', CATEGORIA = '{categoria}' WHERE ID_PRODUTO = {id}")
+            
+            produto_antigo = self.buscar_produto(bd, id)
+            produto_novo = self.repository_produto.atualizar_produto(bd, Produto(id, nome, preco, descricao, categoria))
 
-            dados_produto = bd.sqlToTuple(f"SELECT ID_PRODUTO, NOME, PRECO_UNITARIO, DESCRICAO, CATEGORIA FROM PRODUTOS WHERE ID_PRODUTO = {id}")
-            if dados_produto:
-                produto = Produto(dados_produto[0], dados_produto[1], dados_produto[2], dados_produto[3], dados_produto[4])
-                print(f"{produto} atualizado.")
-                return produto
+            if produto_antigo != produto_novo:
+                print(f"{produto_novo} atualizado.")
             else:
-                print("Erro ao buscar o produto atualizado!")
+                print("Erro ao atualizar o produto!")
         else:
             print("ID não encontrado!")
-            return None
 
-    def existencia_produto(self, bd:ConexaoOracle, id:int):
-        query = f"SELECT 1 FROM PRODUTOS WHERE ID_PRODUTO = {id}"
-        return True if bd.sqlToTuple(query) else False
+    print() #Deixa para o visual ficar melhor
     
-    def buscar_produto(self, bd:ConexaoOracle, id:int):
-        dados_produto = bd.sqlToTuple(f"SELECT ID_PRODUTO, NOME, PRECO_UNITARIO, DESCRICAO, CATEGORIA FROM PRODUTOS WHERE ID_PRODUTO = {id}")
-        if dados_produto:
-            produto = Produto(dados_produto[0], dados_produto[1], dados_produto[2], dados_produto[3], dados_produto[4])
-            return produto
+    def buscar_produto(self):
+        bd = ConexaoOracle(can_write=False)
+        bd.connect()
+        
+        id: int = int(input("Id do produto: "))
+
+        produto: Produto = self.repository_produto.buscar_produto(bd, id)
+
+        if produto:
+            print(produto)
         else:
             print("ID não encontrado!")
-            return None    
+        
+        print() #Deixa para o visual ficar melhor
 
 if __name__ == "__main__":
     c = ControllerProduto

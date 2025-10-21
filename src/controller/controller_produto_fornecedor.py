@@ -1,12 +1,14 @@
-from controller_produto import ControllerProduto
-from controller.controller_fornecedor import ControllerFornecedor
-from conexion.conexao_oracle import ConexaoOracle
-from model.produtos_fornecedores import ProdutoFornecedor
+from src.repository.repository_produto import RepositoryProduto
+from src.repository.repository_fornecedor import RepositoryFornecedor
+from src.repository.repository_produto_fornecedores import RepositoryProdutoFornecedores
+from src.conexion.conexao_oracle import ConexaoOracle
+from src.model.produtos_fornecedores import ProdutoFornecedor
 
 class ControllerProdutoFornecedor:
     def __init__ (self):
-        self.ctrl_produto = ControllerProduto()
-        self.ctrl_fornecedor = ControllerFornecedor()
+        self.repository_produto = RepositoryProduto()
+        self.repository_fornecedor = RepositoryFornecedor()
+        self.repository_produto_fornecedor = RepositoryProdutoFornecedores()
 
     def inserir_produto_fornecedor(self):
         bd = ConexaoOracle(can_write=True)
@@ -14,24 +16,19 @@ class ControllerProdutoFornecedor:
 
         # verificar fk produto
         id_produto = input("ID do produto: ")
-        obj_produto = self.ctrl_produto.buscar_produto(bd, id_produto)
-        if not obj_produto:
+        produto = self.repository_produto.buscar_produto(bd, id_produto)
+        if not produto:
             print("Produto não cadastrado! Cadastre o produto antes de associá-lo a um fornecedor.")
-            return None
         
         # verificar fk fornecedor
         cnpj = input("CNPJ do fornecedor: ")
-        obj_fornecedor = self.ctrl_fornecedor.buscar_fornecedor(bd, cnpj)
-        if not obj_fornecedor:
+        fornecedor = self.repository_fornecedor.buscar_fornecedor(bd, cnpj)
+        if not fornecedor:
             print("Fornecedor não cadastrado! Cadastre o fornecedor antes de associá-lo a um produto.")
-            return None
+
+            produto_fornecedor: ProdutoFornecedor = self.repository_produto_fornecedor.inserir_produto_fornecedor(bd, produto, fornecedor)
         
-        query = "INSERT INTO PRODUTOS_FORNECEDORES (ID_PRODUTO, CNPJ_FORNECEDOR) VALUES (:1, :2) RETURNING ID_PRODUTO_FORNECEDOR INTO :3"
-        params = (id_produto, cnpj)
-        id_produto_forecedor = bd.return_id(query, params)
-        if id_produto_forecedor:
-            produto_fornecedor = ProdutoFornecedor(id_produto_forecedor, obj_produto, obj_fornecedor)
-            print(f"Associação  PRODUTO_FORNECEDOR com ID {id_produto_forecedor} cadastrada.")
+            print(f"Associação  PRODUTO_FORNECEDOR com ID {produto_fornecedor.get_id} cadastrada.")
             return produto_fornecedor
     
     def excluir_produto_fornecedor(self):
@@ -39,13 +36,13 @@ class ControllerProdutoFornecedor:
         bd.connect()
 
         id = input("ID da associação PRODUTO/FORNECEDOR a ser excluída: ")
-        if self.existencia_produto_fornecedor(bd, id):
-            check_fk = f"SELECT 1 FROM MOVIMENTACAO_ESTOQUE WHERE ID_PRODUTO_FORNECEDOR = '{id}'"
-            if bd.sqlToTuple(check_fk):
+        if self.repository_produto_fornecedor.existencia_produto_fornecedor(bd, id):
+            
+            excluido: bool = self.repository_produto_fornecedor.excluir_fornecedor(bd, id)
+            
+            if not excluido:
                 print("Associação não pode ser excluída!\n**Está associada na tabela MOVIMENTACAO_ESTOQUE")
                 return
-
-            bd.write(f"DELETE FROM PRODUTOS_FORNECEDORES WHERE ID_PRODUTO_FORNECEDOR = '{id}'")
             print(f"A associação com ID {id} excluída.")
         else:
             print("ID não encontrado!")
@@ -55,29 +52,42 @@ class ControllerProdutoFornecedor:
         bd.connect()
 
         id = input("ID da associação PRODUTO/FORNECEDOR para atualização: ")
-        if self.existencia_produto_fornecedor(bd, id):
+        if self.repository_produto_fornecedor.existencia_produto_fornecedor(bd, id):
             # verificar fk produto
             id_produto = input("ID do produto: ")
-            obj_produto = self.ctrl_produto.buscar_produto(bd, id_produto)
-            if not obj_produto:
-                print("Produto não cadastrado! Cadastre o produto antes de associá-lo a um fornecedor.")
-                return None
+            produto = self.repository_produto.buscar_produto(bd, id_produto)
+            if not produto:
+                print("Produto não cadastrado!")
+                return
             
             # verificar fk fornecedor
             cnpj = input("CNPJ do fornecedor: ")
-            obj_fornecedor = self.ctrl_fornecedor.buscar_fornecedor(bd, cnpj)
-            if not obj_fornecedor:
-                print("Fornecedor não cadastrado! Cadastre o fornecedor antes de associá-lo a um produto.")
-                return None
+            fornecedor = self.repository_fornecedor.buscar_fornecedor(bd, cnpj)
+            if not fornecedor:
+                print("Fornecedor não cadastrado!")
+                return
 
-            bd.write(f"UPDATE PRODUTOS_FORNECEDORES SET ID_PRODUTO = '{id_produto}', CNPJ_FORNECEDOR = '{cnpj}' WHERE ID_PRODUTO_FORNECEDOR = '{id}'")
-            produto_fornecedor = ProdutoFornecedor(id, obj_produto, obj_fornecedor)
-            print(f"{produto_fornecedor} atualizado.")
-            return produto_fornecedor
+            produto_fornecedor_antigo = ProdutoFornecedor(id, produto, fornecedor)
+            self.repository_produto_fornecedor.atualizar_produto_fornecedor(bd, produto_fornecedor_antigo)
+            produto_fornecedor_novo: ProdutoFornecedor = self.repository_produto_fornecedor.buscar_produto_fornecedor(bd, id)
+
+            if produto_fornecedor_antigo != produto_fornecedor_novo:
+                print(f"{produto_fornecedor_novo} atualizado.")
+            else:
+                print("Erro ao atualizar produto_fornecedor")
         else:
             print("ID não encontrado!")
             return None 
+    
+    def buscar_produto_fornecedor(self):
+        bd = ConexaoOracle(can_write = False)
+        bd.connect()
 
-    def existencia_produto_fornecedor(self, bd:ConexaoOracle, id:int):
-        query = f"SELECT 1 FROM PRODUTOS_FORNECEDORES WHERE ID_PRODUTO_FORNECEDOR = '{id}'"
-        return True if bd.sqlToTuple(query) else False
+        id: str = input("id produto_fornecedor: ")
+
+        produto_fornecedor: ProdutoFornecedor = self.repository_produto_fornecedor.buscar_produto_fornecedor(bd, id)
+
+        if produto_fornecedor:
+            print(produto_fornecedor)
+        else:
+            print("produto_fornecedor não encontrado para esse id.")

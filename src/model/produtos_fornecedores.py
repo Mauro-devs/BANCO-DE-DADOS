@@ -1,5 +1,5 @@
-from produtos import Produto
-from fornecedores import Fornecedor
+from src.model.produtos import Produto
+from src.model.fornecedores import Fornecedor
 
 class ProdutoFornecedor:
     def __init__(self, id:int=None, produto:Produto=None, fornecedor:Fornecedor=None):
