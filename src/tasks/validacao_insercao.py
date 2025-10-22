@@ -1,7 +1,4 @@
 def validar_insercao() -> bool:
-    validacao = input(str("Deseja inserir mais algum registro?\n'SIM'/'NAO'>> "))
+    validacao = input(str("Deseja inserir mais algum registro?\n'SIM'/'NAO'>> ")).upper().strip()
 
-    if validacao != 'SIM':
-        return False
-
-    return True
+    return validacao == 'NAO'

@@ -1,9 +1,4 @@
 def validar_remocao() -> bool:
+    validacao = input(str("Confirme a remoção:\n'SIM'/'NAO'\n>> ")).upper().strip()
 
-
-    validacao = input(str("Confirme a remoção:\n'SIM'/'NAO'\n>> "))
-
-    if validacao != 'NAO':
-        return True
-
-    return False
+    return validacao == 'SIM'
