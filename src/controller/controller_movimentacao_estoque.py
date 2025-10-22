@@ -61,7 +61,7 @@ class ControllerMovimentacaoEstoque:
         
         if self.repository_movimentacao_estoque.existencia_movimentacao_estoque(bd, id):
             
-            excluido: bool = self.repository_movimentacao_estoque.excluir_produto_fornecedor(bd, id)
+            excluido: bool = self.repository_movimentacao_estoque.excluir_movimentacao_estoque(bd, id)
 
             if excluido:
                 print("Movimentação excluída com sucesso.")
@@ -102,17 +102,11 @@ class ControllerMovimentacaoEstoque:
                 if tipo_movimentacao not in ["ENTRADA", "SAÍDA", "SAIDA"]:
                     print("Tipo de movimentação inválido! Use 'ENTRADA' ou 'SAÍDA'.")
                     return
-                
-                data_atual = date.today()
 
                 movimentacao_antiga = self.repository_movimentacao_estoque.buscar_movimentacao_estoque(bd, id)
 
-                produto_fornecedor = movimentacao_antiga.get_produto_fornecedor()
-                funcionario = movimentacao_antiga.get_funcionario()
-
-                print(type(produto_fornecedor))
-                self.repository_movimentacao_estoque.atualizar_movimentacao_estoque(bd, MovimentacaoEstoque(id, produto_fornecedor, funcionario, quantidade, tipo_movimentacao, data_atual))
-                print(2)
+                id_produto_fornecedor = movimentacao_antiga.get_produto_fornecedor().get_id()
+                self.repository_movimentacao_estoque.atualizar_movimentacao_estoque(bd, id_produto_fornecedor, quantidade, tipo_movimentacao)
                 movimentacao_nova = self.repository_movimentacao_estoque.buscar_movimentacao_estoque(bd, id)
 
                 if movimentacao_antiga != movimentacao_nova:

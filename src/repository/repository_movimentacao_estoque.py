@@ -43,16 +43,8 @@ class RepositoryMovimentacaoEstoque():
         bd.write(f"DELETE FROM MOVIMENTACAO_ESTOQUE WHERE ID_MOVIMENTACAO = {id}")
         return True
 
-    def atualizar_movimentacao_estoque(self, bd: ConexaoOracle, movimentacao_estoque: MovimentacaoEstoque):
-        print(2)
-        id_produto_fornecedor: int = movimentacao_estoque.get_produto_fornecedor().get_id()
-        print(3)
-        id_produto: int = movimentacao_estoque.get_produto_fornecedor().get_produto().get_id()
-        print(4)
-        cnpj: str = movimentacao_estoque.get_produto_fornecedor().get_fornecedor().get_cnpj()
-        print(5)
-
-        bd.write(f"UPDATE PRODUTOS_FORNECEDORES SET ID_PRODUTO = '{id_produto}', CNPJ_FORNECEDOR = '{cnpj}' WHERE ID_PRODUTO_FORNECEDOR = '{id_produto_fornecedor}'")
+    def atualizar_movimentacao_estoque(self, bd: ConexaoOracle, id_produto_fornecedor: int, quantidade: int, tipo: str): 
+        bd.write(f"UPDATE MOVIMENTACAO_ESTOQUE SET QUANTIDADE = '{quantidade}', TIPO_MOVIMENTACAO = '{tipo}' WHERE ID_PRODUTO_FORNECEDOR = '{id_produto_fornecedor}'")
 
     def existencia_movimentacao_estoque(self, bd: ConexaoOracle, id: int) -> bool:
         query = f"SELECT 1 FROM MOVIMENTACAO_ESTOQUE WHERE ID_MOVIMENTACAO = {id}"
