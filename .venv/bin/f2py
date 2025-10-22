@@ -1,4 +1,4 @@
-#!/home/labdatabase/Documents/Trabalhos/banco_de_dados_c2/BANCO-DE-DADOS/.venv/bin/python3
+#!/home/labdatabase/Documents/Trabalhos/banco_de_dados_c2/.venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

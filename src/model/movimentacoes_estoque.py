@@ -1,5 +1,5 @@
-from produtos_fornecedores import ProdutoFornecedor
-from funcionarios import Funcionario
+from src.model.produtos_fornecedores import ProdutoFornecedor
+from src.model.funcionarios import Funcionario
 from datetime import date
 
 

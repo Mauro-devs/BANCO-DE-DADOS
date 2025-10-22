@@ -1,5 +1,5 @@
 from src.controller.controller_produto import ControllerProduto
-from src.utils import limpar_console
+from src.utils.config import limpar_console
 
 def view_produto():
     controller = ControllerProduto()

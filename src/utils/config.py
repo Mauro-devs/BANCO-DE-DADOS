@@ -1,3 +1,5 @@
+import os
+
 # src/utils/config.py
 
 MENU_PRINCIPAL = """Menu Principal
@@ -31,15 +33,8 @@ MENU_ENTIDADES = """Entidades
 # A SplashScreen DEPENDE EXATAMENTE DESTE FORMATO.
 QUERY_COUNT = 'select count(1) as total_{tabela} from {tabela}'
 
-def clear_console(wait_time:int=3):
-    '''
-        Esse método limpa a tela após alguns segundos
-        wait_time: argumento de entrada que indica o tempo de espera
-    '''
-    import os
-    from time import sleep
-    sleep(wait_time)
-    
-    # CORRIGIDO: "cls" é o comando para limpar a tela no Windows.
-    # "clear" (do professor) é para Linux/Mac.
-    os.system("cls")
+def limpar_console():
+    if os.name == "nt":
+        os.system("cls")
+    else:
+        os.system("clear")

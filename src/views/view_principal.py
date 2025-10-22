@@ -2,7 +2,8 @@ from src.views.view_funcionario import view_funcionario
 from src.views.view_produto import view_produto
 from src.views.view_fornecedor import view_fornecedor
 from src.views.view_produto_fornecedor import view_produto_fornecedor
-from src.utils import limpar_console
+from src.views.view_movimentacao_estoque import view_movimentacao_estoque
+from src.utils.config import limpar_console
 
 def principal_menu():
     print("--------------------")
@@ -34,7 +35,7 @@ def principal_menu():
         view_fornecedor()
 
     elif opcao == 4:
-        pass
+        view_movimentacao_estoque()
 
     elif opcao == 5:
         view_produto_fornecedor()
