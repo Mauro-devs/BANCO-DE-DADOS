@@ -11,31 +11,33 @@ class ControllerFuncionario:
         self.repository_funcionario = RepositoryFuncionario()
 
     def inserir_funcionario(self):
-        bd = ConexaoOracle(can_write=True)
-        bd.connect()
+        while True:
+            bd = ConexaoOracle(can_write=True)
+            bd.connect()
 
-        cpf = input("CPF do funcionário novo: ")
+            cpf = input("CPF do funcionário novo: ")
 
-        #Verifica se já existe pelo cpf
-        if not self.repository_funcionario.existencia_funcionario(bd, cpf):
-            nome = input("Nome do funcionário: ")
-            telefone = input("Telefone do funcionário: ")
+            #Verifica se já existe pelo cpf
+            if not self.repository_funcionario.existencia_funcionario(bd, cpf):
+                nome = input("Nome do funcionário: ")
+                telefone = input("Telefone do funcionário: ")
 
             
-            funcionarioInserido: Funcionario = self.repository_funcionario.inserir_funcionario(bd, Funcionario(cpf, nome, telefone))
+                funcionarioInserido: Funcionario = self.repository_funcionario.inserir_funcionario(bd, Funcionario(cpf, nome, telefone))
 
-            if funcionarioInserido:
-                print(f"{funcionarioInserido} cadastrado.")
+                if funcionarioInserido:
+                    print(f"{funcionarioInserido} cadastrado.")
 
-                if validar_insercao():
-                    return True
+                    if validar_insercao():
+                        break
 
+                else:
+                    print("Erro ao inserir o funcionário!")
             else:
-                print("Erro ao inserir o funcionário!")
-        else:
-            print("CPF já cadastrado!")
-
-        print() #Deixa para o visual ficar melhor
+                print("CPF já cadastrado!")
+                if validar_insercao():
+                        break
+            print() #Deixa para o visual ficar melhor
         return False
 
     def excluir_funcionario(self):
@@ -51,11 +53,12 @@ class ControllerFuncionario:
             if validar_remocao():
                 excluido: bool = self.repository_funcionario.excluir_funcionario(bd, cpf)
                 
-                if funcionario_excluido:
+                if excluido:
                     print(f"{funcionario_excluido} excluído.")
-                    
-                elif not excluido:
+                else:
                     print("Funcionário não pode ser excluído!\n**Está associado na tabela MOVIMENTACAO_ESTOQUE")
+            else:
+                print("Remoção cancelada pelo usuário.")
         else:
             print("CPF não encontrado!")
 

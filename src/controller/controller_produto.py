@@ -10,7 +10,7 @@ class ControllerProduto:
         self.repository_produto = RepositoryProduto()
 
     def inserir_produto(self):
-            try:
+            while True:
                 bd = ConexaoOracle(can_write=True)
                 bd.connect()
 
@@ -27,19 +27,15 @@ class ControllerProduto:
 
                 if produto_cadastrado:
                     print(f"Produto cadastrado com ID {produto_cadastrado.get_id()}.")
-
                     if validar_insercao():
-                        return True
-
+                        break
                 else:
                     print(f"Erro ao cadastrar o produto")
+                    if validar_insercao():
+                        break
                 
                 print() #Deixa para o visual ficar melhor
-
-            except Exception:
-                ...
             
-            print()
             return False
 
     def excluir_produto(self):
@@ -55,10 +51,13 @@ class ControllerProduto:
 
             if validar_remocao():
                 excluido: bool = self.repository_produto.excluir_produto(bd, id)
-                print(f"{produto_excluido} excluído.")
 
-            elif not excluido:
-               print("Produto não pode ser excluido!\n**Está associada na tabela PRODUTOS_FORNECEDORES")  
+                if excluido:
+                    print(f"{produto_excluido} excluído.")
+                else:
+                    print("Produto não pode ser excluido!\n**Está associada na tabela PRODUTOS_FORNECEDORES")  
+            else:
+                print("Remoção cancelada pelo usuário.")
         else:
             print("ID não encontrado!")
         

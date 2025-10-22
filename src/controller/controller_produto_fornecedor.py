@@ -15,31 +15,33 @@ class ControllerProdutoFornecedor:
         self.repository_produto_fornecedor = RepositoryProdutoFornecedores()
 
     def inserir_produto_fornecedor(self):
-        bd = ConexaoOracle(can_write=True)
-        bd.connect()
+        while True:
+            bd = ConexaoOracle(can_write=True)
+            bd.connect()
 
-        # verificar fk produto
-        id_produto = input("ID do produto: ")
-        produto = self.repository_produto.buscar_produto(bd, id_produto)
-        if not produto:
-            print("Produto não cadastrado! Cadastre o produto antes de associá-lo a um fornecedor.")
+            # verificar fk produto
+            id_produto = input("ID do produto: ")
+            produto = self.repository_produto.buscar_produto(bd, id_produto)
+            if not produto:
+                print("Produto não cadastrado! Cadastre o produto antes de associá-lo a um fornecedor.")
         
-        # verificar fk fornecedor
-        cnpj = input("CNPJ do fornecedor: ")
-        fornecedor = self.repository_fornecedor.buscar_fornecedor(bd, cnpj)
-        if not fornecedor:
-            print("Fornecedor não cadastrado! Cadastre o fornecedor antes de associá-lo a um produto.")
-            return None
+            # verificar fk fornecedor
+            cnpj = input("CNPJ do fornecedor: ")
+            fornecedor = self.repository_fornecedor.buscar_fornecedor(bd, cnpj)
+            if not fornecedor:
+                print("Fornecedor não cadastrado! Cadastre o fornecedor antes de associá-lo a um produto.")
+                return None
 
-        produto_fornecedor: ProdutoFornecedor = self.repository_produto_fornecedor.inserir_produto_fornecedor(bd, produto, fornecedor)
-        if produto_fornecedor:
-            print(f"Associação PRODUTO/FORNECEDOR com ID {produto_fornecedor.get_id()} cadastrada.")
+            produto_fornecedor: ProdutoFornecedor = self.repository_produto_fornecedor.inserir_produto_fornecedor(bd, produto, fornecedor)
+            if produto_fornecedor:
+                print(f"Associação PRODUTO/FORNECEDOR com ID {produto_fornecedor.get_id()} cadastrada.")
 
-            if validar_insercao():
-                return True
-
-        else:
-            print("Erro ao inserir a associação PRODUTO/FORNECEDOR!")
+                if validar_insercao():
+                    break
+            else:
+                print("Erro ao inserir a associação PRODUTO/FORNECEDOR!")
+                if validar_insercao():
+                    break
         
         print()
         return False
@@ -55,10 +57,13 @@ class ControllerProdutoFornecedor:
             
             if validar_remocao():
                 excluido: bool = self.repository_produto_fornecedor.excluir_produto_fornecedor(bd, id)
-                print(f"A associação com ID {id} excluída.")
             
-            elif not excluido:
-                print("Associação não pode ser excluída!\n**Está associada na tabela MOVIMENTACAO_ESTOQUE")
+                if excluido:
+                    print(f"A associação com ID {id} excluída.")
+                else:
+                    print("Associação PRODUTO/FORNECEDOR não pode ser excluída!\n**Está associada na tabela MOVIMENTACAO_ESTOQUE")
+            else:
+                print("Remoção cancelada pelo usuário.")
         else:
             print("ID não encontrado!")
         

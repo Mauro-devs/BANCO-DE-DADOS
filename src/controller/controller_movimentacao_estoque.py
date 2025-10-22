@@ -17,40 +17,43 @@ class ControllerMovimentacaoEstoque:
 
     def inserir_movimentacao_estoque(self):
         try:
-            bd = ConexaoOracle(can_write=True)
-            bd.connect()
+            while True:
+                bd = ConexaoOracle(can_write=True)
+                bd.connect()
 
-            # verificar fk produto_fornecedor
-            id_produto_fornecedor = int(input("ID da associação PRODUTO/FORNECEDOR: "))
-            obj_produto_fornecedor = self.repository_produto_fornecedores.buscar_produto_fornecedor(bd, id_produto_fornecedor)
-            if not obj_produto_fornecedor:
-                print("Associação PRODUTO/FORNECEDOR não cadastrada!")
-                return None
+                # verificar fk produto_fornecedor
+                id_produto_fornecedor = int(input("ID da associação PRODUTO/FORNECEDOR: "))
+                obj_produto_fornecedor = self.repository_produto_fornecedores.buscar_produto_fornecedor(bd, id_produto_fornecedor)
+                if not obj_produto_fornecedor:
+                    print("Associação PRODUTO/FORNECEDOR não cadastrada!")
+                    return None
         
-            # verificar fk funcionario
-            cpf_funcionario = input("CPF do funcionário: ")
-            obj_funcionario = self.repository_funcionario.buscar_funcionario(bd, cpf_funcionario)
-            if not obj_funcionario:
-                print("Funcionário não cadastrado!")
-                return None
+                # verificar fk funcionario
+                cpf_funcionario = input("CPF do funcionário: ")
+                obj_funcionario = self.repository_funcionario.buscar_funcionario(bd, cpf_funcionario)
+                if not obj_funcionario:
+                    print("Funcionário não cadastrado!")
+                    return None
 
-            quantidade = int(input("Quantidade: "))
-            tipo_movimentacao = input("Tipo de movimentação (ENTRADA/SAÍDA): ")
-            if tipo_movimentacao not in ["ENTRADA", "SAÍDA", "SAIDA"]:
-                print("Tipo de movimentação inválido! Use 'ENTRADA' ou 'SAÍDA'.")
-                return
+                quantidade = int(input("Quantidade: "))
+                tipo_movimentacao = input("Tipo de movimentação (ENTRADA/SAÍDA): ")
+                if tipo_movimentacao not in ["ENTRADA", "SAÍDA", "SAIDA"]:
+                    print("Tipo de movimentação inválido! Use 'ENTRADA' ou 'SAÍDA'.")
+                    return
             
-            data_atual = date.today()
+                data_atual = date.today()
 
-            movimentacao_estoque = self.repository_movimentacao_estoque.inserir_movimentacao_estoque(bd, obj_produto_fornecedor, obj_funcionario, quantidade, tipo_movimentacao, data_atual)
+                movimentacao_estoque = self.repository_movimentacao_estoque.inserir_movimentacao_estoque(bd, obj_produto_fornecedor, obj_funcionario, quantidade, tipo_movimentacao, data_atual)
 
-            if movimentacao_estoque:
-                print(f"Movimentação de estoque com ID {movimentacao_estoque.get_id()} cadastrada.")
+                if movimentacao_estoque:
+                    print(f"Movimentação de estoque com ID {movimentacao_estoque.get_id()} cadastrada.")
 
-                if validar_insercao():
-                    return True
-            else:
-                print("Erro ao Cadastrada!")
+                    if validar_insercao():
+                        break
+                else:
+                    print("Erro ao Cadastrar!")
+                    if validar_insercao():
+                        break
         except ValueError:
             print("Quantidade inválida!")
         except Exception as e:
@@ -76,7 +79,11 @@ class ControllerMovimentacaoEstoque:
             if validar_remocao():
                 excluido: bool = self.repository_movimentacao_estoque.excluir_movimentacao_estoque(bd, id)
                 if excluido:
-                    print("Movimentação excluída com sucesso.")  
+                    print("Movimentação excluída com sucesso.")
+                else:
+                    print("Erro ao excluir a movimentação de estoque!")
+            else:
+                print("Remoção cancelada pelo usuário.")
         else:
             print("ID não encontrado!")
 

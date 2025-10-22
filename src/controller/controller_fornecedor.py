@@ -10,28 +10,31 @@ class ControllerFornecedor:
     def __init__(self):
         self.repository_fornecedor = RepositoryFornecedor()
 
-    def inserir_fornecedor(self):        
-        bd = ConexaoOracle(can_write=True)
-        bd.connect()
+    def inserir_fornecedor(self):
+        while True:    
+            bd = ConexaoOracle(can_write=True)
+            bd.connect()
         
-        cnpj = input("CNPJ do fornecedor novo: ")
-        if not self.repository_fornecedor.existencia_fornecedor(bd, cnpj):
-            nome = input("Nome do fornecedor: ")
-            telefone = input("Telefone do fornecedor: ")
+            cnpj = input("CNPJ do fornecedor novo: ")
+            if not self.repository_fornecedor.existencia_fornecedor(bd, cnpj):
+                nome = input("Nome do fornecedor: ")
+                telefone = input("Telefone do fornecedor: ")
         
-            fornecedor: Fornecedor = self.repository_fornecedor.inserir_fornecedor(bd, Fornecedor(cnpj, nome, telefone))
+                fornecedor: Fornecedor = self.repository_fornecedor.inserir_fornecedor(bd, Fornecedor(cnpj, nome, telefone))
 
-            if fornecedor:
-                print(f"{fornecedor} cadastrado.")
+                if fornecedor:
+                    print(f"{fornecedor} cadastrado.")
 
-                if validar_insercao():
-                    return True
+                    if validar_insercao():
+                        break
+                else:
+                    print("Erro ao cadastrar o Fornecedor!")
             else:
-                print("Erro ao cadastrar o Fornecedor!")
-        else:
-            print("CNPJ já cadastrado!")
+                print("CNPJ já cadastrado!")
+                if validar_insercao():
+                        break
         
-        print() # Deixa ae
+            print() # Deixa ae
         return False
 
     def excluir_fornecedor(self):
@@ -42,15 +45,18 @@ class ControllerFornecedor:
 
         cnpj = input("CNPJ do fornecedor a ser excluído: ")
         if self.repository_fornecedor.existencia_fornecedor(bd, cnpj):
-            
+
             fornecedor: Fornecedor = self.repository_fornecedor.buscar_fornecedor(bd, cnpj)
             
             if validar_remocao():
                 excluido: bool = self.repository_fornecedor.excluir_fornecedor(bd, cnpj)
-                print(f"{fornecedor} excluído.")
-
-            elif not excluido:
-                print("Fornecedor não pode ser excluído!\n**Está associado na tabela PRODUTOS_FORNECEDORES")
+                
+                if excluido:
+                    print(f"{fornecedor} excluído.")
+                else:
+                    print("Fornecedor não pode ser excluído!\n**Está associado na tabela PRODUTOS_FORNECEDORES")
+            else:
+                print("Remoção cancelada pelo usuário.")
         else:
             print("CNPJ não encontrado!")
         
