@@ -45,6 +45,6 @@ CREATE TABLE MOVIMENTACAO_ESTOQUE(
 	data_movimentacao DATE NOT NULL,
 	
 	CONSTRAINT check_tipo_movimentacao CHECK (tipo_movimentacao IN ('ENTRADA', 'SAIDA')),
-	CONSTRAINT fk_id_produto_fornecedores FOREIGN KEY (id_produto_fornecedor) REFERENCES PRODUTOS_FORNECEDORES(id_produto_fornecedor),
+	CONSTRAINT fk_id_produtos_fornecedores FOREIGN KEY (id_produto_fornecedor) REFERENCES PRODUTOS_FORNECEDORES(id_produto_fornecedor),
 	CONSTRAINT fk_cpf_funcionario FOREIGN KEY (cpf_funcionario) REFERENCES FUNCIONARIOS(cpf)
 );
