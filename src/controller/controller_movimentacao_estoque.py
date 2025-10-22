@@ -110,10 +110,10 @@ class ControllerMovimentacaoEstoque:
                 produto_fornecedor = movimentacao_antiga.get_produto_fornecedor()
                 funcionario = movimentacao_antiga.get_funcionario()
 
-                print(produto_fornecedor)
+                print(type(produto_fornecedor))
                 self.repository_movimentacao_estoque.atualizar_movimentacao_estoque(bd, MovimentacaoEstoque(id, produto_fornecedor, funcionario, quantidade, tipo_movimentacao, data_atual))
                 print(2)
-                movimentacao_nova = self.buscar_movimentacao_estoque(bd, id)
+                movimentacao_nova = self.repository_movimentacao_estoque.buscar_movimentacao_estoque(bd, id)
 
                 if movimentacao_antiga != movimentacao_nova:
                     print(f"Movimentacao com ID {id} atualizado.")

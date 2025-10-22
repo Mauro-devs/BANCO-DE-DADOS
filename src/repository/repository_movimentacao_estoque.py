@@ -1,6 +1,6 @@
 from src.conexion.conexao_oracle import ConexaoOracle
 from src.model.produtos_fornecedores import ProdutoFornecedor
-from src.repository.repository_produto import RepositoryProduto
+from src.repository.repository_produto_fornecedores import RepositoryProdutoFornecedores
 from src.repository.repository_funcionario import RepositoryFuncionario
 from src.model.produtos import Produto
 from src.model.funcionarios import Funcionario
@@ -9,7 +9,7 @@ from src.model.movimentacoes_estoque import MovimentacaoEstoque
 class RepositoryMovimentacaoEstoque():
 
     def __init__(self):
-        self.repository_produto = RepositoryProduto()
+        self.repository_produto_fornecedores = RepositoryProdutoFornecedores()
         self.repository_funcionario = RepositoryFuncionario()
 
     def inserir_movimentacao_estoque(self, bd: ConexaoOracle, produto_fornecedor: ProdutoFornecedor, funcionario: Funcionario, quantidade, tipo_movimentacao, data_atual) -> MovimentacaoEstoque:
@@ -27,13 +27,13 @@ class RepositoryMovimentacaoEstoque():
         dados = bd.sqlToTuple(f"SELECT ID_MOVIMENTACAO, ID_PRODUTO_FORNECEDOR, CPF_FUNCIONARIO, QUANTIDADE, TIPO_MOVIMENTACAO, DATA_MOVIMENTACAO FROM MOVIMENTACAO_ESTOQUE WHERE ID_MOVIMENTACAO = '{id}'")
 
         if dados:
-            obj_produto = self.repository_produto.buscar_produto(bd, dados[1])
+            obj_produto_fornecedor = self.repository_produto_fornecedores.buscar_produto_fornecedor(bd, dados[1])
             obj_funcionario = self.repository_funcionario.buscar_funcionario(bd, dados[2])
             quantidade = dados[3]
             tipo_movimentacao = dados[4]
             data_movimentacao = dados[5]
 
-            movimentacao_estoque = MovimentacaoEstoque(dados[0], obj_produto, obj_funcionario, quantidade, tipo_movimentacao, data_movimentacao)
+            movimentacao_estoque = MovimentacaoEstoque(dados[0], obj_produto_fornecedor, obj_funcionario, quantidade, tipo_movimentacao, data_movimentacao)
 
             return movimentacao_estoque
         else:
