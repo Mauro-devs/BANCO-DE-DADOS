@@ -15,7 +15,10 @@ class SplashScreen:
 
         # Nome(s) do(s) criador(es)
         # Nome(s) do(s) criador(es)
-        self.created_by = "Arthur Pomarolli, Davi de Souza, Mauro Barros, Pedro Augusto."
+        self.created_by = '''Arthur Pomarolli, 
+                                #              Davi de Souza, 
+                                #              Mauro Barros, 
+                                #              Pedro Augusto.'''
         self.professor = "Prof. M.Sc. Howard Roatti."
         self.disciplina = "Banco de dados"
         self.semestre = "2025/2"
@@ -62,7 +65,7 @@ class SplashScreen:
 
         
                                 ########################################################
-                                #                   SISTEMA DE VENDAS                     
+                                #                   SISTEMA DE VENDAS                               
                                 #                                                        
                                 #  TOTAL DE REGISTROS:                                   
                                 #      1 - FORNECEDORES:       {str(self.get_total_fornecedores()).rjust(5)}
