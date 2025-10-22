@@ -28,7 +28,7 @@ class Relatorio:
         relatorio = oracle.sqlToDataFrame(self.query_relatorio_funcionarios)
 
         if relatorio.empty:
-            print("Não há registros\n\n")
+            print("Não há funcionários\n\n")
             return False
         else:
             print(relatorio.to_string(index=False))
@@ -42,7 +42,7 @@ class Relatorio:
         relatorio = oracle.sqlToDataFrame(self.query_relatorio_movimentacao_estoque)
 
         if relatorio.empty:
-            print("Não há registros\n")
+            print("Não há movimentações no estoque\n")
             return False
         else:
             print(relatorio.to_string(index=False))
@@ -56,7 +56,7 @@ class Relatorio:
         relatorio = oracle.sqlToDataFrame(self.query_relatorio_produtos)
 
         if relatorio.empty:
-            print("Não há registros\n")
+            print("Não há produtos\n")
             return False
         else:
             print(relatorio.to_string(index=False))
@@ -70,7 +70,7 @@ class Relatorio:
         relatorio = oracle.sqlToDataFrame(self.query_relatorio_fornecedores)
 
         if relatorio.empty:
-            print("Não há registros\n")
+            print("Não há fornecedores\n")
             return False
         else:
             print(relatorio.to_string(index=False))
@@ -84,7 +84,7 @@ class Relatorio:
         relatorio = oracle.sqlToDataFrame(self.query_relatorio_produtos_fornecedores)
 
         if relatorio.empty:
-            print("Não há registros\n")
+            print("Não há associação de produtos e fornecedores\n")
             return False
         else:
             print(relatorio.to_string(index=False))

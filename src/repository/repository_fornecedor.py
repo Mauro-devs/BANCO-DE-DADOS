@@ -37,3 +37,10 @@ class RepositoryFornecedor():
         query = f"SELECT 1 FROM FORNECEDORES WHERE CNPJ = '{cnpj}'"
 
         return True if bd.sqlToTuple(query) else False
+    
+    def existencia_fornecedores(self, bd: ConexaoOracle) -> bool:
+        query = f"SELECT COUNT(1) FROM FORNECEDORES"
+
+        return True if bd.sqlToTuple(query) else False
+    
+    

@@ -45,3 +45,9 @@ class RepositoryFuncionario():
         query = f"SELECT 1 FROM FUNCIONARIOS WHERE CPF = '{cpf}'"
         
         return True if bd.sqlToTuple(query) else False
+    
+    def existencia_funcionarios(self, bd: ConexaoOracle) -> bool:
+        # Retorna 1 se achar e None se não achar
+        query = f"SELECT COUNT(1) FROM FUNCIONARIOS"
+        
+        return True if bd.sqlToTuple(query) else False

@@ -57,3 +57,7 @@ class RepositoryMovimentacaoEstoque():
     def existencia_movimentacao_estoque(self, bd: ConexaoOracle, id: int) -> bool:
         query = f"SELECT 1 FROM MOVIMENTACAO_ESTOQUE WHERE ID_MOVIMENTACAO = {id}"
         return True if bd.sqlToTuple(query) else False
+    
+    def existencia_movimentacoes_estoque(self, bd: ConexaoOracle) -> bool:
+        query = f"SELECT COUNT(1) FROM MOVIMENTACAO_ESTOQUE"
+        return True if bd.sqlToTuple(query) else False

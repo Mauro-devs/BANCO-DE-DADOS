@@ -14,18 +14,19 @@ class ControllerFuncionario:
             bd = ConexaoOracle(can_write=True)
             bd.connect()
 
+            print("--------------------------------------------------")
+            print("Listagem Funcionários")
             # Se não tiverem registros
             if not Relatorio().get_relatorio_funcionarios():
-                input("Aperte enter para sair...")
-                return
+                print()
 
+            print("--------------------------------------------------")
             cpf = input("CPF do funcionário novo: ")
 
             #Verifica se já existe pelo cpf
             if not self.repository_funcionario.existencia_funcionario(bd, cpf):
                 nome = input("Nome do funcionário: ")
                 telefone = input("Telefone do funcionário: ")
-
             
                 funcionarioInserido: Funcionario = self.repository_funcionario.inserir_funcionario(bd, Funcionario(cpf, nome, telefone))
 
@@ -107,6 +108,11 @@ class ControllerFuncionario:
     def buscar_funcionario(self):
         bd = ConexaoOracle(can_write=False)
         bd.connect()
+
+        if not self.repository_funcionario.existencia_funcionarios(bd):
+                print("Não há funcionários cadastrados!")
+                input("Aperte enter para sair...")
+                return
 
         cpf = input("CPF do funcionário: ")
 

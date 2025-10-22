@@ -19,23 +19,31 @@ class ControllerMovimentacaoEstoque:
                 bd = ConexaoOracle(can_write=True)
                 bd.connect()
 
+                print("--------------------------------------------------")
+                print("Listagem de Movimentações no Estoque")
                 if not Relatorio().get_relatorio_movimentacoes():
-                    input("Aperte enter para sair...")
-                    return
+                    print()
 
+                print("--------------------------------------------------")
+                print("Listagem de Associações de Produtos e Fornecedores")
+                if not Relatorio().get_relatorio_produtos_fornecedores():
+                    print("Aperte enter para sair...")
+                    return
+                
+                print("--------------------------------------------------")
                 # verificar fk produto_fornecedor
                 id_produto_fornecedor = int(input("ID da associação PRODUTO/FORNECEDOR: "))
                 obj_produto_fornecedor = self.repository_produto_fornecedores.buscar_produto_fornecedor(bd, id_produto_fornecedor)
                 if not obj_produto_fornecedor:
                     print("Associação PRODUTO/FORNECEDOR não cadastrada!")
-                    return None
+                    return
         
                 # verificar fk funcionario
                 cpf_funcionario = input("CPF do funcionário: ")
                 obj_funcionario = self.repository_funcionario.buscar_funcionario(bd, cpf_funcionario)
                 if not obj_funcionario:
                     print("Funcionário não cadastrado!")
-                    return None
+                    return
 
                 quantidade = int(input("Quantidade: "))
                 tipo_movimentacao = input("Tipo de movimentação (ENTRADA/SAÍDA): ")
@@ -73,8 +81,7 @@ class ControllerMovimentacaoEstoque:
         bd.connect()
 
         if not Relatorio().get_relatorio_movimentacoes():
-            input("Aperte enter para sair...")
-            return
+            limpar_console()
 
         try:
             id = int(input("ID da movimentação de estoque a ser excluída: "))
@@ -102,6 +109,11 @@ class ControllerMovimentacaoEstoque:
     def buscar_movimentacao_estoque(self):
         bd = ConexaoOracle(can_write=False)
         bd.connect()
+
+        if not self.repository_movimentacao_estoque.existencia_movimentacoes_estoque(bd):
+                print("Não há movimentações no estoque!")
+                input("Aperte enter para sair...")
+                return
 
         try:
             id = int(input("ID da movimentação de estoque: "))

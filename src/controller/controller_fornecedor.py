@@ -14,11 +14,13 @@ class ControllerFornecedor:
             bd = ConexaoOracle(can_write=True)
             bd.connect()
 
+            print("--------------------------------------------------")
+            print("Listagem Fornecedores")
             # Se não tiverem registros
             if not Relatorio().get_relatorio_fornecedores():
-                input("Aperte enter para sair...")
-                return
-        
+                print()
+
+            print("--------------------------------------------------")
             cnpj = input("CNPJ do fornecedor novo: ")
             if not self.repository_fornecedor.existencia_fornecedor(bd, cnpj):
                 nome = input("Nome do fornecedor: ")
@@ -50,6 +52,7 @@ class ControllerFornecedor:
 
         # Se não tiverem registros
         if not Relatorio().get_relatorio_fornecedores():
+            print("Não há fornecedores cadastrados")
             input("Aperte enter para sair...")
             return
 
@@ -79,6 +82,7 @@ class ControllerFornecedor:
 
         # Se não tiverem registros
         if not Relatorio().get_relatorio_fornecedores():
+            print("Não há fornecedores cadastrados")
             input("Aperte enter para sair...")
             return
 
@@ -108,6 +112,11 @@ class ControllerFornecedor:
     def buscar_fornecedor(self):
             bd = ConexaoOracle(can_write=False)
             bd.connect()
+
+            if not self.repository_fornecedor.existencia_fornecedores(bd):
+                print("Não há fornecedores cadastrados!")
+                input("Aperte enter para sair...")
+                return
 
             cnpj: str = input("cnpj do fornecedor: ")
 

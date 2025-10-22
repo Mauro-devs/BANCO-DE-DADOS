@@ -55,3 +55,10 @@ class RepositoryProdutoFornecedores():
     def existencia_produto_fornecedor(self, bd: ConexaoOracle, id: int) -> bool:
         query = f"SELECT 1 FROM PRODUTOS_FORNECEDORES WHERE ID_PRODUTO_FORNECEDOR = {id}"
         return True if bd.sqlToTuple(query) else False
+    
+    def existencia_produtos_fornecedores(self, bd: ConexaoOracle) -> bool:
+        query = f"SELECT COUNT(1) FROM PRODUTOS_FORNECEDORES"
+
+        result = bd.sqlToTuple(query)[0]
+
+        return True if result else False

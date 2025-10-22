@@ -14,16 +14,15 @@ class ControllerProduto:
                 bd.connect()
 
                 if not Relatorio().get_relatorio_produtos():
-                    input("Aperte enter para sair...")
-                    return
+                    print()
 
                 nome = input("Nome do produto: ")
                 preco = float(input("Preco do produto: "))
                 descricao = input("Descricao do produto: ")
-                categoria = input("Categoria do produto: ")
+                categoria = input("Categoria do produto 'MOUSE', 'TECLADO', 'MONITOR'', 'HEADSET', 'MOUSEPAD': ").upper().strip()
 
-                if categoria not in ["MOUSE", "TECLADO", "MONITOR", "HEADSET", "MOUSE_PAD"]:
-                    print("Categoria inválida -> (MOUSE, TECLADO, MONITOR, HEADSET, MOUSE_PAD)")
+                if categoria not in ["MOUSE", "TECLADO", "MONITOR", "HEADSET", "MOUSEPAD"]:
+                    print("Categoria inválida -> (MOUSE, TECLADO, MONITOR, HEADSET, MOUSEPAD)")
                     return
 
                 produto_cadastrado: Produto = self.repository_produto.inserir_produto(bd, nome, preco, descricao, categoria)
@@ -113,6 +112,11 @@ class ControllerProduto:
         bd = ConexaoOracle(can_write=False)
         bd.connect()
         
+        if not self.repository_produto.existencia_produtos(bd):
+                print("Não há produtos cadastrados!")
+                input("Aperte enter para sair...")
+                return
+
         id: int = int(input("Id do produto: "))
 
         produto: Produto = self.repository_produto.buscar_produto(bd, id)

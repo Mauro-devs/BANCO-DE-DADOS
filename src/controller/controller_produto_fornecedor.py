@@ -18,22 +18,39 @@ class ControllerProdutoFornecedor:
             bd = ConexaoOracle(can_write=True)
             bd.connect()
 
+            print("--------------------------------------------------")
+            print("Listagem de Associações de Produtos e Fornecedores")
             if not Relatorio().get_relatorio_produtos_fornecedores():
+                print()
+
+            print()
+            print("--------------------------------------------------")
+            print("Listagem de Produtos")
+            if not Relatorio().get_relatorio_produtos():
                 input("Aperte enter para sair...")
                 return
-
+            
+            print("--------------------------------------------------")
             # verificar fk produto
             id_produto = input("ID do produto: ")
             produto = self.repository_produto.buscar_produto(bd, id_produto)
             if not produto:
-                print("Produto não cadastrado! Cadastre o produto antes de associá-lo a um fornecedor.")
-        
+                print("Produto não encontrado!")
+                return
+            
+            print()
+            print("--------------------------------------------------")
+            print("Listagem de Fornecedores")
+            if not Relatorio().get_relatorio_fornecedores():
+                input("Aperte enter para sair...")
+                return
+
             # verificar fk fornecedor
             cnpj = input("CNPJ do fornecedor: ")
             fornecedor = self.repository_fornecedor.buscar_fornecedor(bd, cnpj)
             if not fornecedor:
                 print("Fornecedor não cadastrado! Cadastre o fornecedor antes de associá-lo a um produto.")
-                return None
+                return
 
             produto_fornecedor: ProdutoFornecedor = self.repository_produto_fornecedor.inserir_produto_fornecedor(bd, produto, fornecedor)
             if produto_fornecedor:
@@ -125,6 +142,11 @@ class ControllerProdutoFornecedor:
     def buscar_produto_fornecedor(self):
         bd = ConexaoOracle(can_write = False)
         bd.connect()
+
+        if not self.repository_produto_fornecedor.existencia_produtos_fornecedores(bd):
+                print("Não há associações de produtos e fornecedores!")
+                input("Aperte enter para sair...")
+                return
 
         id: str = input("id produto_fornecedor: ")
 
