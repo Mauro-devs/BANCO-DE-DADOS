@@ -4,6 +4,10 @@ from src.repository.repository_movimentacao_estoque import RepositoryMovimentaca
 from src.conexion.conexao_oracle import ConexaoOracle
 from src.model.movimentacoes_estoque import MovimentacaoEstoque
 from datetime import date
+from src.tasks.validacao_insercao import validar_insercao
+from src.tasks.validacao_alteracao import validar_alteracao
+from src.tasks.validacao_remocao import validar_remocao
+from src.reports.relatorios import Relatorio
 
 class ControllerMovimentacaoEstoque:
     def __init__(self):
@@ -42,6 +46,9 @@ class ControllerMovimentacaoEstoque:
 
             if movimentacao_estoque:
                 print(f"Movimentação de estoque com ID {movimentacao_estoque.get_id()} cadastrada.")
+
+                if validar_insercao():
+                    return True
             else:
                 print("Erro ao Cadastrada!")
         except ValueError:
@@ -49,24 +56,31 @@ class ControllerMovimentacaoEstoque:
         except Exception as e:
             print(e)
         
+        print() #Deixa para o visual ficar melhor
+        return False
+        
     def excluir_movimentacao_estoque(self):
         bd = ConexaoOracle(can_write=True)
         bd.connect()
+
+        Relatorio().get_relatorio_movimentacoes()
 
         try:
             id = int(input("ID da movimentação de estoque a ser excluída: "))
         except ValueError:
             print("ID inválido!")
             return
-        
+
         if self.repository_movimentacao_estoque.existencia_movimentacao_estoque(bd, id):
             
-            excluido: bool = self.repository_movimentacao_estoque.excluir_movimentacao_estoque(bd, id)
+            if validar_remocao():
+                excluido: bool = self.repository_movimentacao_estoque.excluir_movimentacao_estoque(bd, id)
+                if excluido:
+                    print("Movimentação excluída com sucesso.")  
+        else:
+            print("ID não encontrado!")
 
-            if excluido:
-                print("Movimentação excluída com sucesso.")
-            else:
-                print("ID não encontrado!")
+        print()
     
     def buscar_movimentacao_estoque(self):
         bd = ConexaoOracle(can_write=False)
@@ -88,6 +102,8 @@ class ControllerMovimentacaoEstoque:
     def atualizar_movimentacao_estoque(self):
         bd = ConexaoOracle(can_write=True)
         bd.connect()
+
+        Relatorio().get_relatorio_movimentacoes()
 
         try:
             id = int(input("ID da movimentação de estoque para atualização: "))
@@ -111,6 +127,10 @@ class ControllerMovimentacaoEstoque:
 
                 if movimentacao_antiga != movimentacao_nova:
                     print(f"Movimentacao com ID {id} atualizado.")
+
+                    if validar_alteracao():
+                        return True
+                
                 else:
                     print("Erro ao atualizar a movimentação de estoque!")
             else:
@@ -119,3 +139,6 @@ class ControllerMovimentacaoEstoque:
             print("Quantidade inválida!")
         except Exception as e:
             print(e)
+        
+        print() # Deixa para o visual ficar melhor
+        return False

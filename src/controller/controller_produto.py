@@ -1,6 +1,10 @@
 from src.conexion.conexao_oracle import ConexaoOracle
 from src.model.produtos import Produto
 from src.repository.repository_produto import RepositoryProduto
+from src.tasks.validacao_insercao import validar_insercao
+from src.tasks.validacao_alteracao import validar_alteracao
+from src.tasks.validacao_remocao import validar_remocao
+from src.reports.relatorios import Relatorio
 class ControllerProduto:
     def __init__(self):
         self.repository_produto = RepositoryProduto()
@@ -23,6 +27,10 @@ class ControllerProduto:
 
                 if produto_cadastrado:
                     print(f"Produto cadastrado com ID {produto_cadastrado.get_id()}.")
+
+                    if validar_insercao():
+                        return True
+
                 else:
                     print(f"Erro ao cadastrar o produto")
                 
@@ -30,25 +38,27 @@ class ControllerProduto:
 
             except Exception:
                 ...
+            
+            print()
+            return False
 
     def excluir_produto(self):
         bd = ConexaoOracle(can_write=True)
         bd.connect()
 
+        Relatorio().get_relatorio_produtos()
+
         id = input("ID do produto a ser excluído: ")
         if self.repository_produto.existencia_produto(bd, id):
             
             produto_excluido: Produto = self.repository_produto.buscar_produto(bd, id)
-            excluido: bool = self.repository_produto.excluir_produto(bd, id)
 
-            if not excluido:
-               print("Produto não pode ser excluido!\n**Está associada na tabela PRODUTOS_FORNECEDORES") 
-               return
-                
-            if produto_excluido:
+            if validar_remocao():
+                excluido: bool = self.repository_produto.excluir_produto(bd, id)
                 print(f"{produto_excluido} excluído.")
-            else:
-                print("Erro ao excluir o produto!")
+
+            elif not excluido:
+               print("Produto não pode ser excluido!\n**Está associada na tabela PRODUTOS_FORNECEDORES")  
         else:
             print("ID não encontrado!")
         
@@ -57,6 +67,8 @@ class ControllerProduto:
     def atualizar_produto(self):
         bd = ConexaoOracle(can_write=True)
         bd.connect()
+
+        Relatorio().get_relatorio_produtos()
 
         id = input("ID do produto para atualização: ")
         if self.repository_produto.existencia_produto(bd, id):
@@ -71,12 +83,16 @@ class ControllerProduto:
 
             if produto_antigo != produto_novo:
                 print(f"{produto_novo} atualizado.")
+
+                if validar_alteracao():
+                    return True
             else:
                 print("Erro ao atualizar o produto!")
         else:
             print("ID não encontrado!")
 
-    print() #Deixa para o visual ficar melhor
+        print() #Deixa para o visual ficar melhor
+        return False
     
     def buscar_produto(self):
         bd = ConexaoOracle(can_write=False)

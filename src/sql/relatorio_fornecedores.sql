@@ -1,5 +1,5 @@
 SELECT f.cnpj,
-        f.nome_fantasia
+        f.nome,
         f.telefone
 FROM FORNECEDORES f
-ORDER BY f.nome_fantasia;
+ORDER BY f.nome

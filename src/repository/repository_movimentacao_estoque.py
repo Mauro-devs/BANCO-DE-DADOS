@@ -39,6 +39,14 @@ class RepositoryMovimentacaoEstoque():
         else:
             return None
 
+    def listar_movimentacao_estoque(self, bd: ConexaoOracle):
+        with open('src/sql/relatorio_movimentacao_estoque.sql', 'r') as f:
+            query = f.read()
+
+            movimentacoes = bd.sqlToTuple(query)
+        
+        return movimentacoes
+
     def excluir_movimentacao_estoque(self, bd: ConexaoOracle, id: int) -> bool:
         bd.write(f"DELETE FROM MOVIMENTACAO_ESTOQUE WHERE ID_MOVIMENTACAO = {id}")
         return True

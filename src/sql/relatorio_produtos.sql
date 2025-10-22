@@ -4,4 +4,4 @@ SELECT prd.id_produto ,
         prd.descricao,
         prd.categoria
 FROM PRODUTOS prd
-ORDER BY prd.categoria, prd.preco_unitario;
+ORDER BY prd.categoria, prd.preco_unitario

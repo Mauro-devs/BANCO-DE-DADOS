@@ -1,26 +1,23 @@
-from src.views.view_funcionario import view_funcionario
-from src.views.view_produto import view_produto
-from src.views.view_fornecedor import view_fornecedor
-from src.views.view_produto_fornecedor import view_produto_fornecedor
-from src.views.view_movimentacao_estoque import view_movimentacao_estoque
+from src.views.view_adicionar import view_adicionar
+from src.views.view_buscar import view_buscar
+from src.views.view_remover import view_remover
+from src.views.view_alterar import view_alterar
+
 from src.utils.config import limpar_console
 from src.utils.splash_screen import SplashScreen
 import time
 
 
 def principal_menu():
-    print(SplashScreen().get_updated_screen())
-
-    time.sleep(5)
-
+    time.sleep(1)
+    
     print("--------------------")
     print(" MENU PRINCIPAL\n")
-    print("1) FUNCIONÁRIOS")
-    print("2) PRODUTOS")
-    print("3) FORNECEDORES")
-    print("4) MOVIMENTAÇÕES")
-    print("5) PRODUTO FORNECEDOR")
-    print("6) SAIR")
+    print("1) ADICIONAR")
+    print("2) BUSCAR")
+    print("3) REMOVER")
+    print("4) ATUALIZAR")
+    print("5) SAIR")
 
     try:
         opcao = int(input("--: "))
@@ -33,21 +30,18 @@ def principal_menu():
         return False
 
     if opcao == 1:
-        view_funcionario()
+        view_adicionar()
     
     elif opcao == 2:
-        view_produto()
-
+        view_buscar()
+        
     elif opcao == 3:
-        view_fornecedor()
+        view_remover()
 
     elif opcao == 4:
-        view_movimentacao_estoque()
-
-    elif opcao == 5:
-        view_produto_fornecedor()
+        view_alterar()
     
-    elif opcao == 6:
+    elif opcao == 5:
         return True
     
     else:

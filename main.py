@@ -8,6 +8,7 @@ sair = False
 
 limpar_console()
 
+print(SplashScreen().get_updated_screen())
 while not sair:
     sair = principal_menu()
 
