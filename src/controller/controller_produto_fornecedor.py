@@ -3,10 +3,9 @@ from src.repository.repository_fornecedor import RepositoryFornecedor
 from src.repository.repository_produto_fornecedores import RepositoryProdutoFornecedores
 from src.conexion.conexao_oracle import ConexaoOracle
 from src.model.produtos_fornecedores import ProdutoFornecedor
-from src.tasks.validacao_insercao import validar_insercao
-from src.tasks.validacao_alteracao import validar_alteracao
-from src.tasks.validacao_remocao import validar_remocao
+from src.tasks.validacoes import validar_confirmacao, validar_continuacao
 from src.reports.relatorios import Relatorio
+from src.utils.config import limpar_console
 
 class ControllerProdutoFornecedor:
     def __init__ (self):
@@ -18,6 +17,10 @@ class ControllerProdutoFornecedor:
         while True:
             bd = ConexaoOracle(can_write=True)
             bd.connect()
+
+            if not Relatorio().get_relatorio_produtos_fornecedores():
+                input("Aperte enter para sair...")
+                return
 
             # verificar fk produto
             id_produto = input("ID do produto: ")
@@ -36,11 +39,15 @@ class ControllerProdutoFornecedor:
             if produto_fornecedor:
                 print(f"Associação PRODUTO/FORNECEDOR com ID {produto_fornecedor.get_id()} cadastrada.")
 
-                if validar_insercao():
+                if validar_continuacao("Deseja continuar inserindo registros?"):
+                    limpar_console()
+                else:
+                    limpar_console()
                     break
             else:
                 print("Erro ao inserir a associação PRODUTO/FORNECEDOR!")
-                if validar_insercao():
+                if not validar_continuacao("Deseja continuar inserindo registros?"):
+                    limpar_console()
                     break
         
         print()
@@ -50,12 +57,14 @@ class ControllerProdutoFornecedor:
         bd = ConexaoOracle(can_write=True)
         bd.connect()
 
-        Relatorio().get_relatorio_produtos_fornecedores()
+        if not Relatorio().get_relatorio_produtos_fornecedores():
+            input("Aperte enter para sair...")
+            return
 
         id = input("ID da associação PRODUTO/FORNECEDOR a ser excluída: ")
         if self.repository_produto_fornecedor.existencia_produto_fornecedor(bd, id):
             
-            if validar_remocao():
+            if validar_confirmacao("Deseja realmente excluir este registro?"):
                 excluido: bool = self.repository_produto_fornecedor.excluir_produto_fornecedor(bd, id)
             
                 if excluido:
@@ -73,7 +82,9 @@ class ControllerProdutoFornecedor:
         bd = ConexaoOracle(can_write=True)
         bd.connect()
 
-        Relatorio().get_relatorio_produtos_fornecedores()
+        if not Relatorio().get_relatorio_produtos_fornecedores():
+            input("Aperte enter para sair...")
+            return
 
         id = input("ID da associação PRODUTO/FORNECEDOR para atualização: ")
         if self.repository_produto_fornecedor.existencia_produto_fornecedor(bd, id):
@@ -98,7 +109,8 @@ class ControllerProdutoFornecedor:
             if produto_fornecedor_antigo != produto_fornecedor_novo:
                 print(f"{produto_fornecedor_novo} atualizado.")
 
-                if validar_alteracao():
+                if validar_continuacao("Deseja alterar mais registros?"):
+                    limpar_console()
                     return True
 
             else:

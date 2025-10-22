@@ -1,10 +1,9 @@
 from src.model.fornecedores import Fornecedor
 from src.conexion.conexao_oracle import ConexaoOracle
 from src.repository.repository_fornecedor import RepositoryFornecedor
-from src.tasks.validacao_insercao import validar_insercao
-from src.tasks.validacao_alteracao import validar_alteracao
-from src.tasks.validacao_remocao import validar_remocao
+from src.tasks.validacoes import validar_confirmacao, validar_continuacao
 from src.reports.relatorios import Relatorio
+from src.utils.config import limpar_console
 
 class ControllerFornecedor:
     def __init__(self):
@@ -14,6 +13,11 @@ class ControllerFornecedor:
         while True:    
             bd = ConexaoOracle(can_write=True)
             bd.connect()
+
+            # Se não tiverem registros
+            if not Relatorio().get_relatorio_fornecedores():
+                input("Aperte enter para sair...")
+                return
         
             cnpj = input("CNPJ do fornecedor novo: ")
             if not self.repository_fornecedor.existencia_fornecedor(bd, cnpj):
@@ -25,13 +29,16 @@ class ControllerFornecedor:
                 if fornecedor:
                     print(f"{fornecedor} cadastrado.")
 
-                    if validar_insercao():
+                    if validar_continuacao("Deseja continuar inserindo registros?"):
+                        limpar_console()
+                    else:
+                        limpar_console()
                         break
                 else:
                     print("Erro ao cadastrar o Fornecedor!")
             else:
                 print("CNPJ já cadastrado!")
-                if validar_insercao():
+                if not validar_continuacao("Deseja continuar inserindo registros?"):
                         break
         
             print() # Deixa ae
@@ -41,17 +48,21 @@ class ControllerFornecedor:
         bd = ConexaoOracle(can_write=True)
         bd.connect()
 
-        Relatorio().get_relatorio_fornecedores()
+        # Se não tiverem registros
+        if not Relatorio().get_relatorio_fornecedores():
+            input("Aperte enter para sair...")
+            return
 
         cnpj = input("CNPJ do fornecedor a ser excluído: ")
         if self.repository_fornecedor.existencia_fornecedor(bd, cnpj):
 
             fornecedor: Fornecedor = self.repository_fornecedor.buscar_fornecedor(bd, cnpj)
             
-            if validar_remocao():
+            if validar_confirmacao("Deseja realmente excluir este registro?"):
                 excluido: bool = self.repository_fornecedor.excluir_fornecedor(bd, cnpj)
                 
                 if excluido:
+                    limpar_console()
                     print(f"{fornecedor} excluído.")
                 else:
                     print("Fornecedor não pode ser excluído!\n**Está associado na tabela PRODUTOS_FORNECEDORES")
@@ -66,7 +77,10 @@ class ControllerFornecedor:
         bd = ConexaoOracle(can_write=True)
         bd.connect()
 
-        Relatorio().get_relatorio_fornecedores()
+        # Se não tiverem registros
+        if not Relatorio().get_relatorio_fornecedores():
+            input("Aperte enter para sair...")
+            return
 
         cnpj = input("CNPJ do fornecedor para atualização: ")
         if self.repository_fornecedor.existencia_fornecedor(bd, cnpj):
@@ -80,7 +94,7 @@ class ControllerFornecedor:
             if fornecedor_antigo != fornecedor_novo:
                 print(f"{fornecedor_antigo} atualizado.")
 
-                if validar_alteracao():
+                if validar_continuacao("Deseja alterar mais registros?"):
                     return True
 
             else:

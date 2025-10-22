@@ -10,7 +10,7 @@ def view_buscar():
 
     while not sair:
         print("--------------------")
-        print(" MENU ADICIONAR\n")
+        print(" MENU BUSCAR\n")
         print("1) FUNCIONÁRIOS")
         print("2) PRODUTOS")
         print("3) FORNECEDORES")

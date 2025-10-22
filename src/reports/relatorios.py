@@ -25,25 +25,69 @@ class Relatorio:
         oracle = ConexaoOracle()
         oracle.connect()
         
-        print(oracle.sqlToDataFrame(self.query_relatorio_funcionarios).to_string(index=False))
+        relatorio = oracle.sqlToDataFrame(self.query_relatorio_funcionarios)
+
+        if relatorio.empty:
+            print("Não há registros\n\n")
+            return False
+        else:
+            print(relatorio.to_string(index=False))
+            print()
+            return True
 
     def get_relatorio_movimentacoes(self):
         oracle = ConexaoOracle()
         oracle.connect()
-        print(oracle.sqlToDataFrame(self.query_relatorio_movimentacao_estoque).to_string(index=False))
+
+        relatorio = oracle.sqlToDataFrame(self.query_relatorio_movimentacao_estoque)
+
+        if relatorio.empty:
+            print("Não há registros\n")
+            return False
+        else:
+            print(relatorio.to_string(index=False))
+            print()
+            return True
 
     def get_relatorio_produtos(self):
         oracle = ConexaoOracle()
         oracle.connect()
-        print(oracle.sqlToDataFrame(self.query_relatorio_produtos).to_string(index=False))
+
+        relatorio = oracle.sqlToDataFrame(self.query_relatorio_produtos)
+
+        if relatorio.empty:
+            print("Não há registros\n")
+            return False
+        else:
+            print(relatorio.to_string(index=False))
+            print()
+            return True
 
     def get_relatorio_fornecedores(self):
         oracle = ConexaoOracle()
         oracle.connect()
-        print(oracle.sqlToDataFrame(self.query_relatorio_fornecedores).to_string(index=False))
+
+        relatorio = oracle.sqlToDataFrame(self.query_relatorio_fornecedores)
+
+        if relatorio.empty:
+            print("Não há registros\n")
+            return False
+        else:
+            print(relatorio.to_string(index=False))
+            print()
+            return True
     
     def get_relatorio_produtos_fornecedores(self):
         oracle = ConexaoOracle()
         oracle.connect()
-        print(oracle.sqlToDataFrame(self.query_relatorio_produtos_fornecedores).to_string(index=False))
+
+        relatorio = oracle.sqlToDataFrame(self.query_relatorio_produtos_fornecedores)
+
+        if relatorio.empty:
+            print("Não há registros\n")
+            return False
+        else:
+            print(relatorio.to_string(index=False))
+            print()
+            return True
     

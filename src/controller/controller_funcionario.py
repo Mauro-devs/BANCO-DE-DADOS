@@ -1,10 +1,9 @@
 from src.model.funcionarios import Funcionario
 from src.conexion.conexao_oracle import ConexaoOracle
 from src.repository.repository_funcionario import RepositoryFuncionario
-from src.tasks.validacao_insercao import validar_insercao
-from src.tasks.validacao_alteracao import validar_alteracao
-from src.tasks.validacao_remocao import validar_remocao
+from src.tasks.validacoes import validar_confirmacao, validar_continuacao
 from src.reports.relatorios import Relatorio
+from src.utils.config import limpar_console
 
 class ControllerFuncionario:
     def __init__(self):
@@ -14,6 +13,11 @@ class ControllerFuncionario:
         while True:
             bd = ConexaoOracle(can_write=True)
             bd.connect()
+
+            # Se não tiverem registros
+            if not Relatorio().get_relatorio_funcionarios():
+                input("Aperte enter para sair...")
+                return
 
             cpf = input("CPF do funcionário novo: ")
 
@@ -28,15 +32,18 @@ class ControllerFuncionario:
                 if funcionarioInserido:
                     print(f"{funcionarioInserido} cadastrado.")
 
-                    if validar_insercao():
+                    if validar_continuacao("Deseja continuar inserindo registros?"):
+                        limpar_console()
+                    else:
+                        limpar_console()
                         break
 
                 else:
                     print("Erro ao inserir o funcionário!")
             else:
                 print("CPF já cadastrado!")
-                if validar_insercao():
-                        break
+                if not validar_continuacao("Deseja continuar inserindo registros?"):
+                    break
             print() #Deixa para o visual ficar melhor
         return False
 
@@ -44,16 +51,19 @@ class ControllerFuncionario:
         bd = ConexaoOracle(can_write=True)
         bd.connect()
 
-        Relatorio().get_relatorio_funcionarios()
+        if not Relatorio().get_relatorio_funcionarios():
+            input("Aperte enter para sair...")
+            return
 
         cpf = input("CPF do funcionário a ser excluído: ")
         if self.repository_funcionario.existencia_funcionario(bd, cpf):
             funcionario_excluido: Funcionario = self.repository_funcionario.buscar_funcionario(bd, cpf)
             
-            if validar_remocao():
+            if validar_confirmacao("Deseja realmente excluir este registro?"):
                 excluido: bool = self.repository_funcionario.excluir_funcionario(bd, cpf)
                 
                 if excluido:
+                    limpar_console()
                     print(f"{funcionario_excluido} excluído.")
                 else:
                     print("Funcionário não pode ser excluído!\n**Está associado na tabela MOVIMENTACAO_ESTOQUE")
@@ -68,7 +78,9 @@ class ControllerFuncionario:
         bd = ConexaoOracle(can_write=True)
         bd.connect()
 
-        Relatorio().get_relatorio_funcionarios()
+        if not Relatorio().get_relatorio_funcionarios():
+            input("Aperte enter para sair...")
+            return
 
         cpf = input("CPF do funcionário para atualização: ")
         if self.repository_funcionario.existencia_funcionario(bd, cpf):
@@ -81,7 +93,8 @@ class ControllerFuncionario:
                 
             print(f"{funcionario_atualizar} atualizado.")
 
-            if validar_alteracao():
+            if validar_continuacao("Deseja alterar mais registros?"):
+                limpar_console()
                 return True
 
         else:

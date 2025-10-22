@@ -2,12 +2,10 @@ from src.repository.repository_funcionario import RepositoryFuncionario
 from src.repository.repository_produto_fornecedores import RepositoryProdutoFornecedores
 from src.repository.repository_movimentacao_estoque import RepositoryMovimentacaoEstoque
 from src.conexion.conexao_oracle import ConexaoOracle
-from src.model.movimentacoes_estoque import MovimentacaoEstoque
 from datetime import date
-from src.tasks.validacao_insercao import validar_insercao
-from src.tasks.validacao_alteracao import validar_alteracao
-from src.tasks.validacao_remocao import validar_remocao
+from src.tasks.validacoes import validar_confirmacao, validar_continuacao
 from src.reports.relatorios import Relatorio
+from src.utils.config import limpar_console
 
 class ControllerMovimentacaoEstoque:
     def __init__(self):
@@ -20,6 +18,10 @@ class ControllerMovimentacaoEstoque:
             while True:
                 bd = ConexaoOracle(can_write=True)
                 bd.connect()
+
+                if not Relatorio().get_relatorio_movimentacoes():
+                    input("Aperte enter para sair...")
+                    return
 
                 # verificar fk produto_fornecedor
                 id_produto_fornecedor = int(input("ID da associação PRODUTO/FORNECEDOR: "))
@@ -48,11 +50,15 @@ class ControllerMovimentacaoEstoque:
                 if movimentacao_estoque:
                     print(f"Movimentação de estoque com ID {movimentacao_estoque.get_id()} cadastrada.")
 
-                    if validar_insercao():
+                    if validar_continuacao("Deseja continuar inserindo registros?"):
+                        limpar_console()
+                    else:
+                        limpar_console()
                         break
                 else:
                     print("Erro ao Cadastrar!")
-                    if validar_insercao():
+                    if not validar_continuacao("Deseja continuar inserindo registros?"):
+                        limpar_console()
                         break
         except ValueError:
             print("Quantidade inválida!")
@@ -66,7 +72,9 @@ class ControllerMovimentacaoEstoque:
         bd = ConexaoOracle(can_write=True)
         bd.connect()
 
-        Relatorio().get_relatorio_movimentacoes()
+        if not Relatorio().get_relatorio_movimentacoes():
+            input("Aperte enter para sair...")
+            return
 
         try:
             id = int(input("ID da movimentação de estoque a ser excluída: "))
@@ -76,11 +84,13 @@ class ControllerMovimentacaoEstoque:
 
         if self.repository_movimentacao_estoque.existencia_movimentacao_estoque(bd, id):
             
-            if validar_remocao():
+            if validar_confirmacao("Deseja realmente excluir este registro?"):
                 excluido: bool = self.repository_movimentacao_estoque.excluir_movimentacao_estoque(bd, id)
                 if excluido:
+                    limpar_console()
                     print("Movimentação excluída com sucesso.")
                 else:
+                    limpar_console()
                     print("Erro ao excluir a movimentação de estoque!")
             else:
                 print("Remoção cancelada pelo usuário.")
@@ -110,7 +120,9 @@ class ControllerMovimentacaoEstoque:
         bd = ConexaoOracle(can_write=True)
         bd.connect()
 
-        Relatorio().get_relatorio_movimentacoes()
+        if not Relatorio().get_relatorio_movimentacoes():
+            input("Aperte enter para sair...")
+            return
 
         try:
             id = int(input("ID da movimentação de estoque para atualização: "))
@@ -135,7 +147,8 @@ class ControllerMovimentacaoEstoque:
                 if movimentacao_antiga != movimentacao_nova:
                     print(f"Movimentacao com ID {id} atualizado.")
 
-                    if validar_alteracao():
+                    if validar_continuacao("Deseja alterar mais registros?"):
+                        limpar_console()
                         return True
                 
                 else:

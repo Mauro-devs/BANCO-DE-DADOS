@@ -1,10 +1,9 @@
 from src.conexion.conexao_oracle import ConexaoOracle
 from src.model.produtos import Produto
 from src.repository.repository_produto import RepositoryProduto
-from src.tasks.validacao_insercao import validar_insercao
-from src.tasks.validacao_alteracao import validar_alteracao
-from src.tasks.validacao_remocao import validar_remocao
+from src.tasks.validacoes import validar_confirmacao, validar_continuacao
 from src.reports.relatorios import Relatorio
+from src.utils.config import limpar_console
 class ControllerProduto:
     def __init__(self):
         self.repository_produto = RepositoryProduto()
@@ -13,6 +12,10 @@ class ControllerProduto:
             while True:
                 bd = ConexaoOracle(can_write=True)
                 bd.connect()
+
+                if not Relatorio().get_relatorio_produtos():
+                    input("Aperte enter para sair...")
+                    return
 
                 nome = input("Nome do produto: ")
                 preco = float(input("Preco do produto: "))
@@ -27,11 +30,15 @@ class ControllerProduto:
 
                 if produto_cadastrado:
                     print(f"Produto cadastrado com ID {produto_cadastrado.get_id()}.")
-                    if validar_insercao():
+                    if validar_continuacao("Deseja continuar inserindo registros?"):
+                        limpar_console()
+                    else:
+                        limpar_console()
                         break
                 else:
                     print(f"Erro ao cadastrar o produto")
-                    if validar_insercao():
+                    if not validar_continuacao("Deseja continuar inserindo registros?"):
+                        limpar_console()
                         break
                 
                 print() #Deixa para o visual ficar melhor
@@ -42,19 +49,24 @@ class ControllerProduto:
         bd = ConexaoOracle(can_write=True)
         bd.connect()
 
-        Relatorio().get_relatorio_produtos()
+        if not Relatorio().get_relatorio_produtos():
+            input("Aperte enter para sair...")
+            return
 
         id = input("ID do produto a ser excluído: ")
         if self.repository_produto.existencia_produto(bd, id):
             
             produto_excluido: Produto = self.repository_produto.buscar_produto(bd, id)
 
-            if validar_remocao():
+            if validar_confirmacao("Deseja realmente excluir este registro?"):
                 excluido: bool = self.repository_produto.excluir_produto(bd, id)
 
                 if excluido:
+                    limpar_console()
                     print(f"{produto_excluido} excluído.")
+
                 else:
+                    limpar_console()
                     print("Produto não pode ser excluido!\n**Está associada na tabela PRODUTOS_FORNECEDORES")  
             else:
                 print("Remoção cancelada pelo usuário.")
@@ -67,7 +79,9 @@ class ControllerProduto:
         bd = ConexaoOracle(can_write=True)
         bd.connect()
 
-        Relatorio().get_relatorio_produtos()
+        if not Relatorio().get_relatorio_produtos():
+            input("Aperte enter para sair...")
+            return
 
         id = input("ID do produto para atualização: ")
         if self.repository_produto.existencia_produto(bd, id):
@@ -83,9 +97,11 @@ class ControllerProduto:
             if produto_antigo != produto_novo:
                 print(f"{produto_novo} atualizado.")
 
-                if validar_alteracao():
+                if validar_continuacao("Deseja alterar mais registros?"):
+                    limpar_console()
                     return True
             else:
+                limpar_console()
                 print("Erro ao atualizar o produto!")
         else:
             print("ID não encontrado!")
