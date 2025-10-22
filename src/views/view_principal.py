@@ -4,8 +4,15 @@ from src.views.view_fornecedor import view_fornecedor
 from src.views.view_produto_fornecedor import view_produto_fornecedor
 from src.views.view_movimentacao_estoque import view_movimentacao_estoque
 from src.utils.config import limpar_console
+from src.utils.splash_screen import SplashScreen
+import time
+
 
 def principal_menu():
+    print(SplashScreen().get_updated_screen())
+
+    time.sleep(5)
+
     print("--------------------")
     print(" MENU PRINCIPAL\n")
     print("1) FUNCIONÁRIOS")
