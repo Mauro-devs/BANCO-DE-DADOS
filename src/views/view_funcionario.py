@@ -1,5 +1,5 @@
 from src.controller.controller_funcionario import ControllerFuncionario
-from src.utils import limpar_console
+from src.utils.config import limpar_console
 
 def view_funcionario():
     controller = ControllerFuncionario()

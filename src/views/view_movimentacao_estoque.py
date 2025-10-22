@@ -1,14 +1,14 @@
-from src.controller.controller_fornecedor import ControllerFornecedor
+from src.controller.controller_movimentacao_estoque import ControllerMovimentacaoEstoque
 from src.utils.config import limpar_console
 
-def view_fornecedor():
-    controller = ControllerFornecedor()
+def view_movimentacao_estoque():
+    controller = ControllerMovimentacaoEstoque()
 
     sair = False
 
     while not sair:
         print("--------------------")
-        print(" MENU FORNECEDOR\n")
+        print(" MENU MOVIMENTACAO/ESTOQUE\n")
         print("1) ADICIONAR")
         print("2) BUSCAR")
         print("3) ATUALIZAR")
@@ -25,16 +25,16 @@ def view_fornecedor():
             return False
         
         if opcao == 1:
-            controller.inserir_fornecedor()
+            controller.inserir_movimentacao_estoque()
         
         elif opcao == 2:
-            controller.buscar_fornecedor()
+            controller.buscar_movimentacao_estoque()
 
         elif opcao == 3:
-            controller.atualizar_fornecedor()
+            controller.atualizar_movimentacao_estoque()
 
         elif opcao == 4:
-            controller.excluir_fornecedor()
+            controller.excluir_movimentacao_estoque()
 
         elif opcao == 5:
             return True

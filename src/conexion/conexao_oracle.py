@@ -10,6 +10,7 @@ class ConexaoOracle:
         self.conn = None
         self.port = None
         self.service_name = ""
+        self.user = None
     
         try:
             with open("src/conexion/acesso/autenticacao.oracle", "r") as f:
