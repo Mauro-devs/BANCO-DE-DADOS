@@ -2,9 +2,9 @@ from src.views.view_adicionar import view_adicionar
 from src.views.view_buscar import view_buscar
 from src.views.view_remover import view_remover
 from src.views.view_alterar import view_alterar
+from src.views.view_relatorio import view_relatorio
 
 from src.utils.config import limpar_console
-from src.utils.splash_screen import SplashScreen
 import time
 
 
@@ -17,7 +17,8 @@ def principal_menu():
     print("2) BUSCAR")
     print("3) REMOVER")
     print("4) ATUALIZAR")
-    print("5) SAIR")
+    print("5) RELATÓRIOS")
+    print("6) SAIR")
 
     try:
         opcao = int(input("--: "))
@@ -31,7 +32,6 @@ def principal_menu():
 
     if opcao == 1:
         view_adicionar()
-    
     elif opcao == 2:
         view_buscar()
         
@@ -42,6 +42,9 @@ def principal_menu():
         view_alterar()
     
     elif opcao == 5:
+        view_relatorio()
+    
+    elif opcao == 6:
         return True
     
     else:
