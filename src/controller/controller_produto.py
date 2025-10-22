@@ -9,40 +9,40 @@ class ControllerProduto:
         self.repository_produto = RepositoryProduto()
 
     def inserir_produto(self):
-            while True:
-                bd = ConexaoOracle(can_write=True)
-                bd.connect()
+        while True:
+            bd = ConexaoOracle(can_write=True)
+            bd.connect()
 
-                if not Relatorio().get_relatorio_produtos():
-                    print()
+            if not Relatorio().get_relatorio_produtos():
+                print()
 
-                nome = input("Nome do produto: ")
-                preco = float(input("Preco do produto: "))
-                descricao = input("Descricao do produto: ")
-                categoria = input("Categoria do produto 'MOUSE', 'TECLADO', 'MONITOR'', 'HEADSET', 'MOUSEPAD': ").upper().strip()
+            nome = input("Nome do produto: ")
+            preco = float(input("Preco do produto: "))
+            descricao = input("Descricao do produto: ")
+            categoria = input("Categoria do produto 'MOUSE', 'TECLADO', 'MONITOR'', 'HEADSET', 'MOUSEPAD': ").upper().strip()
 
-                if categoria not in ["MOUSE", "TECLADO", "MONITOR", "HEADSET", "MOUSEPAD"]:
-                    print("Categoria inválida -> (MOUSE, TECLADO, MONITOR, HEADSET, MOUSEPAD)")
-                    return
+            if categoria not in ["MOUSE", "TECLADO", "MONITOR", "HEADSET", "MOUSEPAD"]:
+                print("Categoria inválida -> (MOUSE, TECLADO, MONITOR, HEADSET, MOUSEPAD)")
+                return
 
-                produto_cadastrado: Produto = self.repository_produto.inserir_produto(bd, nome, preco, descricao, categoria)
+            produto_cadastrado: Produto = self.repository_produto.inserir_produto(bd, nome, preco, descricao, categoria)
 
-                if produto_cadastrado:
-                    print(f"Produto cadastrado com ID {produto_cadastrado.get_id()}.")
-                    if validar_continuacao("Deseja continuar inserindo registros?"):
-                        limpar_console()
-                    else:
-                        limpar_console()
-                        break
+            if produto_cadastrado:
+                print(f"Produto cadastrado com ID {produto_cadastrado.get_id()}.")
+                if validar_continuacao("Deseja continuar inserindo registros?"):
+                    limpar_console()
                 else:
-                    print(f"Erro ao cadastrar o produto")
-                    if not validar_continuacao("Deseja continuar inserindo registros?"):
-                        limpar_console()
-                        break
+                    limpar_console()
+                    break
+            else:
+                print(f"Erro ao cadastrar o produto")
+                if not validar_continuacao("Deseja continuar inserindo registros?"):
+                    limpar_console()
+                    break
                 
-                print() #Deixa para o visual ficar melhor
-            
-            return False
+            print() #Deixa para o visual ficar melhor
+        
+        return False
 
     def excluir_produto(self):
         bd = ConexaoOracle(can_write=True)

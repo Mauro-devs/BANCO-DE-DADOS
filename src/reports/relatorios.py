@@ -19,6 +19,9 @@ class Relatorio:
 
         with open("src/sql/relatorio_produtos_fornecedor.sql") as f:
             self.query_relatorio_produtos_fornecedores = f.read()
+        
+        with open("src/sql/relatorio_listar_produtos_fornecedor.sql") as f:
+            self.query_relatorio_listar_produtos_fornecedores = f.read()
 
 
     def get_relatorio_funcionarios(self):
@@ -71,6 +74,20 @@ class Relatorio:
 
         if relatorio.empty:
             print("Não há fornecedores\n")
+            return False
+        else:
+            print(relatorio.to_string(index=False))
+            print()
+            return True
+        
+    def get_relatorio_listar_produtos_fornecedores(self):
+        oracle = ConexaoOracle()
+        oracle.connect()
+
+        relatorio = oracle.sqlToDataFrame(self.query_relatorio_listar_produtos_fornecedores)
+        
+        if relatorio.empty:
+            print("Não há produtos fornecedores\n")
             return False
         else:
             print(relatorio.to_string(index=False))

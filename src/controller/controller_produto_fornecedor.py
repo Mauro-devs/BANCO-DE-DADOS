@@ -20,7 +20,7 @@ class ControllerProdutoFornecedor:
 
             print("--------------------------------------------------")
             print("Listagem de Associações de Produtos e Fornecedores")
-            if not Relatorio().get_relatorio_produtos_fornecedores():
+            if not Relatorio().get_relatorio_listar_produtos_fornecedores():
                 print()
 
             print()
@@ -74,7 +74,7 @@ class ControllerProdutoFornecedor:
         bd = ConexaoOracle(can_write=True)
         bd.connect()
 
-        if not Relatorio().get_relatorio_produtos_fornecedores():
+        if not Relatorio().get_relatorio_listar_produtos_fornecedores():          
             input("Aperte enter para sair...")
             return
 
@@ -99,7 +99,7 @@ class ControllerProdutoFornecedor:
         bd = ConexaoOracle(can_write=True)
         bd.connect()
 
-        if not Relatorio().get_relatorio_produtos_fornecedores():
+        if not Relatorio().get_relatorio_listar_produtos_fornecedores():
             input("Aperte enter para sair...")
             return
 

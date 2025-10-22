@@ -24,19 +24,19 @@ def view_relatorio():
             return False
         
         if opcao == 1:
-            continuar = Relatorio().get_relatorio_funcionarios()
+            Relatorio().get_relatorio_funcionarios()
         
         elif opcao == 2:
-            continuar = Relatorio().get_relatorio_produtos()
+            Relatorio().get_relatorio_produtos()
 
         elif opcao == 3:
-            continuar = Relatorio().get_relatorio_fornecedores()
+            Relatorio().get_relatorio_fornecedores()
 
         elif opcao == 4:
-            continuar = Relatorio().get_relatorio_movimentacoes()
+            Relatorio().get_relatorio_movimentacoes()
 
         elif opcao == 5:
-            continuar = Relatorio().get_relatorio_produtos_fornecedores()
+            Relatorio().get_relatorio_produtos_fornecedores()
 
         elif opcao == 6:
             return False

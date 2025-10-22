@@ -26,7 +26,7 @@ class ControllerMovimentacaoEstoque:
 
                 print("--------------------------------------------------")
                 print("Listagem de Associações de Produtos e Fornecedores")
-                if not Relatorio().get_relatorio_produtos_fornecedores():
+                if not Relatorio().get_relatorio_listar_produtos_fornecedores():
                     print("Aperte enter para sair...")
                     return
                 
@@ -37,7 +37,11 @@ class ControllerMovimentacaoEstoque:
                 if not obj_produto_fornecedor:
                     print("Associação PRODUTO/FORNECEDOR não cadastrada!")
                     return
-        
+
+                if not Relatorio().get_relatorio_funcionarios():
+                    print("Aperte enter para sair...")
+                    return
+
                 # verificar fk funcionario
                 cpf_funcionario = input("CPF do funcionário: ")
                 obj_funcionario = self.repository_funcionario.buscar_funcionario(bd, cpf_funcionario)
