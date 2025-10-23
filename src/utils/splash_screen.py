@@ -54,7 +54,7 @@ class SplashScreen:
         
         criadores_str = ""
         for i, nome in enumerate(criadores):
-            prefixo = "  CRIADO POR: " if i == 0 else "               "
+            prefixo = "   CRIADO POR: " if i == 0 else "               "
             criadores_str += format_line(f"{prefixo}{nome}") + "\n"
         criadores_str = criadores_str.rstrip("\n")
 
